@@ -3,19 +3,19 @@ package Color::Calc;
 use strict;
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 
-our $VERSION = 0.10;
+our $VERSION = 0.11;
 our $AUTOLOAD;
 
 use Exporter;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
-  color_mix	    color_mix_hex
-  color_contrast    color_contrast_hex
-  color_blend	    color_blend_hex
-  color_invert	    color_invert_hex
-  color_light	    color_light_hex
-  color_dark	    color_dark_hex
+  color_mix	    color_mix_hex	color_mix_html
+  color_contrast    color_contrast_hex	color_contrast_html
+  color_blend	    color_blend_hex	color_blend_html
+  color_invert	    color_invert_hex	color_invert_html
+  color_light	    color_light_hex	color_light_html
+  color_dark	    color_dark_hex	color_dark_html
 );
 
 my %ColorNames = ();
@@ -82,6 +82,10 @@ Returns a list of three values in the range 0..255.
 =item * I<function>_hex
 
 Returns a hexadecimal RGB value in the format RRGGBB.
+
+=item * I<function>_html
+
+Returns a value compatible with W3C's HTML and CSS specifications, typically #RRGGBB.
 
 =back
 
@@ -267,6 +271,14 @@ sub AUTOLOAD
       my $name = $1;
       *$AUTOLOAD = sub {
         return tuple2hex(&$name(@_));
+      };
+      goto &$AUTOLOAD;
+    }
+
+    if($AUTOLOAD =~ m/(.*)_hex$/) {
+      my $name = $1;
+      *$AUTOLOAD = sub {
+        return '#'.tuple2hex(&$name(@_));
       };
       goto &$AUTOLOAD;
     }

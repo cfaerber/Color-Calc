@@ -1,5 +1,9 @@
 Revision history for Perl extension Color::Calc.
 
+0.11  Thu Mar 18 00:00:00 2004
+	- added xxx_html
+	- should work with perl 5.005 now
+
 0.10  Sun May 04 00:00:00 2003
 	- added tests
 	- added more functions
