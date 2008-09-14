@@ -1,8 +1,9 @@
-# $Id: Calc.pm,v 1.20 2006/12/10 21:29:45 cfaerber Exp $
+# $Id: Calc.pm,v 1.21 2008/09/14 12:30:22 cfaerber Exp $
 #
 package Color::Calc;
 
 use strict;
+use warnings;
 
 use Carp;
 use Exporter;
@@ -362,6 +363,14 @@ Default: C<__MODEvar>
 
 =back
 
+=item set_output_format
+
+  $cc->set_output_format( $format );
+
+Changes the output format for an existing C<Color::Calc> object.  
+
+=back
+
 =head3 Importing customised functions
 
 You can also choose to import customised funtions into your
@@ -558,6 +567,8 @@ this variable.
 The module supports the following calculation functions, which can
 be accessed through one of the methods described above:
 
+=over
+
 =item get($color)
 
 Returns C<$color> as-is (but in the selected output format). This
@@ -583,7 +594,7 @@ The optional C<$alpha> parameter can be a value between 0.0 (use
 C<$color1> only) and 1.0 (use C<$color2> only), the default is
 0.5.
 
-=item color_light($color [, $alpha])
+=item light($color [, $alpha])
 
 Returns a lighter version of C<$color>, i.e. returns
 C<mix($color,[255,255,255],$alpha)>.
@@ -652,13 +663,9 @@ L<Graphics::ColorNames> (required);
 
 L<Graphics::ColorObject> (optional)
 
-=head1 AUTHOR
+=head1 AUTHOR/LICENSE
 
-Claus Färber <cfaerber@cpan.org>
-
-=head1 COPYRIGHT
-
-Copyright © 2004-2006 Claus Färber
+Copyright © 2004-2008 Claus Färber <CFAERBER@cpan.org>
 
 This module is free software; you can redistribute it and/or
 modify it under the terms of either the GNU General Public License

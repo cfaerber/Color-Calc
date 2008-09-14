@@ -1,4 +1,4 @@
-# $Id: Makefile.PL,v 1.10 2006/12/10 21:29:45 cfaerber Exp $
+# $Id: Makefile.PL,v 1.11 2008/09/14 12:30:22 cfaerber Exp $
 #
 use ExtUtils::MakeMaker;
 
@@ -13,6 +13,7 @@ WriteMakefile(
     ($] >= 5.005 ?
       ('ABSTRACT_FROM' 	=> 'Calc.pm',
        'AUTHOR'     	=> 'Claus Färber <CFAERBER@cpan.org>',
+       'LICENSE'	=> 'perl',
     ) : ()),
 );
 

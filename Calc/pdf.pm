@@ -1,12 +1,15 @@
-# $Id: pdf.pm,v 1.3 2006/11/13 23:06:48 cfaerber Exp $
+# $Id: pdf.pm,v 1.4 2008/09/14 12:30:22 cfaerber Exp $
 #
 package Color::Calc::pdf;
 
 use strict;
+use warnings;
 use Carp;
 
 use Exporter;
 use Color::Calc();
+
+our $VERSION = 1.05;
 
 our @ISA = qw(Exporter);
 our @EXPORT = ('color', map { 'color_'.$_ } @Color::Calc::__subs);

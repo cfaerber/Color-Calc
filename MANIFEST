@@ -31,4 +31,3 @@ t/21_input_formats_import.t
 t/30_color_schemes_oo.t
 t/31_color_schemes_import_HTML.t
 t/31_color_schemes_import_X.t
-META.yml                                 Module meta-data (added by MakeMaker)

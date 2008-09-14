@@ -1,5 +1,10 @@
 Revision history for Perl extension Color::Calc.
 
+1.05 Sun Sep 14 22:00:00 2008
+	- use warnings everywhere
+	- use strict everywhere
+	- Test::Pod & Test::Pod::Coverage
+
 1.04 Sun Dec 10 22:00:00 2006
 	- fixed last test w/ Graphics::ColorObject
 	  (reported by Nelson Elhage)
@@ -59,4 +64,4 @@ Revision history for Perl extension Color::Calc.
 0.02  Sat Apr 26 00:00:00 2003
 	- first public release
 
-$Id: Changes,v 1.16 2006/12/10 21:29:45 cfaerber Exp $	
+$Id: Changes,v 1.17 2008/09/14 12:30:22 cfaerber Exp $	

@@ -1,12 +1,15 @@
-# $Id: html.pm,v 1.2 2005/04/09 20:49:58 cfaerber Exp $
+# $Id: html.pm,v 1.3 2008/09/14 12:30:22 cfaerber Exp $
 #
 package Color::Calc::html;
 
 use strict;
+use warnings;
 use Carp;
 
 use Exporter;
 use Color::Calc();
+
+our $VERSION = 1.05;
 
 our @ISA = qw(Exporter);
 our @EXPORT = ('color', map { 'color_'.$_ } @Color::Calc::__subs);
