@@ -5,7 +5,7 @@ Calc/html.pm
 Calc/object.pm
 Calc/tuple.pm
 Changes
-Makefile
+Makefile.PL
 MANIFEST
 META.yml
 README

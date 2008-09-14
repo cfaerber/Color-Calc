@@ -1,3 +1,5 @@
+# $Id: hex.pm,v 1.2 2005/04/09 20:49:58 cfaerber Exp $
+#
 package Color::Calc::hex;
 
 use strict;

@@ -32,3 +32,5 @@ Revision history for Perl extension Color::Calc.
 
 0.02  Sat Apr 26 00:00:00 2003
 	- first public release
+
+$Id: Changes,v 1.8 2005/04/09 20:49:58 cfaerber Exp $	

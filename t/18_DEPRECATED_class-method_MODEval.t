@@ -1,3 +1,5 @@
+# $Id: 18_DEPRECATED_class-method_MODEval.t,v 1.2 2005/04/09 20:49:59 cfaerber Exp $
+#
 use Test::More tests => 48;
 use Color::Calc();
 

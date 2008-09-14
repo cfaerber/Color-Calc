@@ -1,3 +1,5 @@
+# $Id: Makefile.PL,v 1.4 2005/04/09 20:49:58 cfaerber Exp $
+#
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
@@ -6,6 +8,7 @@ WriteMakefile(
     'VERSION_FROM'	=> 'Calc.pm', # finds $VERSION
     'PREREQ_PM'		=> {
 		'Graphics::ColorNames'	=> 0.32,
+		'Graphics::ColorNames::SVG' => 0.00,
 		'Params::Validate'	=> 0.75,
 	},
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005

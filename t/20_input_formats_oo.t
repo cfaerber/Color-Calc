@@ -1,3 +1,5 @@
+# $Id: 20_input_formats_oo.t,v 1.2 2005/04/09 20:49:59 cfaerber Exp $
+#
 use Test::More tests => 8;
 use Color::Calc();
 my $cc = Color::Calc->new( 'OutputFormat' => 'hex' );

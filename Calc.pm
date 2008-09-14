@@ -1,3 +1,5 @@
+# $Id: Calc.pm,v 1.10 2005/04/09 20:49:58 cfaerber Exp $
+#
 package Color::Calc;
 
 use strict;
@@ -596,7 +598,7 @@ C<_I<output_format>> to select the output format:
 =head1 SEE ALSO
 
 L<Graphics::ColorNames> (required);
-L<Color::Object> (optional)
+L<Graphics::ColorObject> (optional)
 
 =head1 AUTHOR
 

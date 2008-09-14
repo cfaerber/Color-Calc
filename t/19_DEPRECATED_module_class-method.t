@@ -1,3 +1,5 @@
+# $Id: 19_DEPRECATED_module_class-method.t,v 1.2 2005/04/09 20:49:59 cfaerber Exp $
+#
 use Test::More tests => 48;
 use Color::Calc::hex();
 use Color::Calc::html();
