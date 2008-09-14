@@ -1,6 +1,6 @@
-use Test::More tests => 1;
-BEGIN { use_ok('Color::Calc') }; 
-# is(uc(color_contrast_hex('#000000')),'FFFFFF');
-# is(color_contrast_html('#000000'),'white');
-# $Color::Calc::MODE = 'html';
-# is(color('000000'),'black');
+use Test::More tests => 2;
+
+use_ok('Color::Calc');
+
+my $cc = new Color::Calc;
+isa_ok($cc, 'Color::Calc');

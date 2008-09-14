@@ -5,7 +5,8 @@ WriteMakefile(
     'NAME'		=> 'Color::Calc',
     'VERSION_FROM'	=> 'Calc.pm', # finds $VERSION
     'PREREQ_PM'		=> {
-		'Graphics::ColorNames' => 0.32,
+		'Graphics::ColorNames'	=> 0.32,
+		'Params::Validate'	=> 0.75,
 	},
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM => 'Calc.pm', # retrieve abstract from module

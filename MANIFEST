@@ -19,3 +19,4 @@ t/00_basic.t
 t/91_PDF-API2-Color.t
 t/12_param_1.t
 t/11_modes.t
+META.yml                                 Module meta-data (added by MakeMaker)

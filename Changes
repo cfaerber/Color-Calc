@@ -1,5 +1,11 @@
 Revision history for Perl extension Color::Calc.
 
+0.29_0001 Fri Mar 25 12:00:00 2005
+	- added object-orientated interface
+	- added procedural interface with customisation on import
+	- added Color::Calc::WWW
+	- color scheme is now selectable
+
 0.20  Mon Mar 28 00:00:00 2004
 	- added Color::Calc::<xxx> modules to select return type
 	- added $Color::Calc::MODE to select return type

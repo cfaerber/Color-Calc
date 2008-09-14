@@ -1,0 +1,12 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Color-Calc
+version:      0.29_0001
+version_from: Calc.pm
+installdirs:  site
+requires:
+    Graphics::ColorNames:          0.32
+    Params::Validate:              0.75
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17
