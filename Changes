@@ -1,5 +1,14 @@
 Revision history for Perl extension Color::Calc.
 
+0.20  Mon Mar 28 00:00:00 2004
+	- added Color::Calc::<xxx> modules to select return type
+	- added $Color::Calc::MODE to select return type
+	- return value of xxx_tuple can be used as parameter
+	- <xxx>_html returns color names instead of #RRGGBB if possible
+	- support for Graphics::ColorObject (input/output)
+	- support for PDF::API2::Color (input/output)
+	- fixed import list
+
 0.12  Thu Mar 18 00:00:00 2004
 	- added xxx_html
 	- should work with perl 5.005 now

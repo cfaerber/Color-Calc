@@ -1,5 +1,5 @@
-Color::Calc 0.10
-===========
+Color::Calc 0.2
+===============
 
 The "Color::Calc" module implements simple calculations with RGB
 colors. This can be used to create a full color scheme from a few
@@ -23,9 +23,15 @@ This module requires these other modules and libraries:
 
   Graphics::ColorNames
 
+The following modules are optional:
+
+  Color::Object
+  PDF::API2::Color
+  Graphics::ColorObject
+
 COPYRIGHT AND LICENCE
 
-Copyright © 2003 Claus A. Färber
+Copyright © 2004 Claus A. Färber
 
 This library is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. 
