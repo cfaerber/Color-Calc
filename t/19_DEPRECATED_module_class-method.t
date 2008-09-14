@@ -1,9 +1,8 @@
-# $Id: 19_DEPRECATED_module_class-method.t,v 1.2 2005/04/09 20:49:59 cfaerber Exp $
+# $Id: 19_DEPRECATED_module_class-method.t,v 1.3 2005/09/24 17:36:28 cfaerber Exp $
 #
 use Test::More tests => 48;
 use Color::Calc::hex();
 use Color::Calc::html();
-use Color::Calc::object();
 use Color::Calc::tuple();
 
 is(Color::Calc::hex::get		('red'),		'ff0000');

@@ -1,11 +1,11 @@
-# $Id: 11_import_object.t,v 1.2 2005/04/09 20:49:59 cfaerber Exp $
+# $Id: 11_import_object.t,v 1.3 2005/09/24 17:36:28 cfaerber Exp $
 #
 use Test::More tests => 13;
 use Color::Calc( 'OutputFormat' => 'object' );
 
 SKIP: {
 eval { require Graphics::ColorObject; };
-skip "Graphics::ColorObject not installed", 12 if $@;
+skip "Graphics::ColorObject not installed", 13 if $@;
 
 is(lc color_get		('red')->as_RGBhex,		'ff0000');
 is(lc color    		('red')->as_RGBhex,		'ff0000');

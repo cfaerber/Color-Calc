@@ -1,5 +1,15 @@
 Revision history for Perl extension Color::Calc.
 
+0.30 Sat Sep 24 20:00:00 2005
+	- new 'pdf' output format, which is accepted by PDF::API2 v.40
+	- allow any number of hex digits per color in #RGB/#RRGGBB/
+	  #RRRGGGBBB/...
+	- better tests
+	- FIX: #13731 import w/ use does not work under mod_perl
+
+0.29_0003 Sat Apr 09 20:00:00 2005
+	- fixed MANIFEST (broken distribution)
+
 0.29_0002 Sat Mar 26 16:20:00 2005
 	- Color::Calc::WWW now uses Graphics::ColorNames::WWW
 	- Color::Calc::WWW was missing from distribution
@@ -33,4 +43,4 @@ Revision history for Perl extension Color::Calc.
 0.02  Sat Apr 26 00:00:00 2003
 	- first public release
 
-$Id: Changes,v 1.8 2005/04/09 20:49:58 cfaerber Exp $	
+$Id: Changes,v 1.10 2005/09/24 17:36:53 cfaerber Exp $	

@@ -1,17 +1,18 @@
-# $Id: Calc.pm,v 1.10 2005/04/09 20:49:58 cfaerber Exp $
+# $Id: Calc.pm,v 1.13 2005/09/24 17:36:15 cfaerber Exp $
 #
 package Color::Calc;
 
 use strict;
-use Carp;
-use POSIX;
 
+use Carp;
+use Exporter;
 use Params::Validate qw(:all);
+use POSIX;
 
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML;
 
-our $VERSION = '0.29_0003';
+our $VERSION = '1.00';
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -24,8 +25,10 @@ my %__formats = (
   'hex'		=> sub { return tuple2hex((@_)); },
   'html'	=> sub { my $col = lc(tuple2hex((@_))); return $__HTMLColors{$col} || '#'.$col; },
   'object'	=> sub { eval { require Graphics::ColorObject; }; return Graphics::ColorObject->new_RGB255( [(@_)] ); },
-# 'pdf'		=> sub { eval { require PDF::API2::Color; }; return  PDF::API2::Color->newRGB( map { $_ / 255 } ((@_))); },
+  'obj'		=> sub { eval { require Color::Object; }; return Color::Object->newRGB(map { 255*$_; } @_); },
+  'pdf'		=> sub { return sprint('#%%04x%%04x%%04x',(map { 257*$_ } @_)) },
 );
+
 my @__formats = keys %__formats;
 my $__formats_re = join('|', @__formats,'__MODEvar');
 
@@ -161,12 +164,13 @@ sub __get {
   if ((ref $$p[0]) eq 'ARRAY' && $#{$$p[0]} == 2 ) {
     return __normtuple_in(@{shift @$p});
   }
-  elsif( UNIVERSAL::isa($$p[0],'Color::Object') ||
-         UNIVERSAL::isa($$p[0],'PDF::API2::Color')) {
-    return (map { 255 * $_; } (shift(@{$p})->asRGB));
+  elsif( my $f255 = UNIVERSAL::can($$p[0],'asRGB255')
+              || UNIVERSAL::can($$p[0],'as_RGB255') ) {
+    return ($f255->(shift(@{$p})));
   }
-  elsif( UNIVERSAL::isa($$p[0],'Graphics::ColorObject')) {
-    return (shift(@{$p})->as_RGB255());
+  elsif( my $f1 = UNIVERSAL::can($$p[0],'asRGB')
+              || UNIVERSAL::can($$p[0],'as_RGB') ) {
+    return (map { 255 * $_; } $f1->(shift(@{$p})));
   }
   elsif( $#$p >= (2 + ($q||0)) && 
                       __is_col_val($$p[0]) &&
@@ -174,13 +178,11 @@ sub __get {
 		      __is_col_val($$p[2])) {
     return (splice @$p, 0, 3);	 
   }	 
-  elsif( $$p[0] =~ m/^#?([0-9A-F])([0-9A-F])([0-9A-F])$/i ) {
+  elsif( $$p[0] =~ m/^#?(([0-9A-F][0-9A-F][0-9A-F])+)$/i ) {
     shift @$p; 
-    return (map { hex($_) * 17 } ($1,$2,$3));
-  }
-  elsif( $$p[0] =~ m/^#?([0-9A-F][0-9A-F])([0-9A-F][0-9A-F])([0-9A-F][0-9A-F])$/i ) {
-    shift @$p; 
-    return (map { hex($_) } ($1,$2,$3));
+    my $hh = $1; my $hl = (length $hh)/3;
+    return map { hex($_) * 255.0 / hex('F' x $hl) }
+      (substr($hh,0,$hl), substr($hh,$hl,$hl), substr($hh,2*$hl));
   }
   else {
     my $col = $self->{'ColorScheme'}->{$$p[0]};
@@ -328,27 +330,29 @@ formats:
 An arrayref pointing to an array with three elements in the range
 C<0>..C<255> corresponding to the red, green, and blue component.
 
+
 =item * 
 
-A string containing a hexadecimal RGB value in the form 
-C<#I<RRGGBB>>/C<#I<RGB>> or C<I<RGB>>/C<I<RRGGBB>>.
+A string containing a hexadecimal RGB value like
+C<#I<RGB>>/C<#I<RRGGBB>>/C<#I<RRRGGGBBB>>/... or
+C<I<RGB>>/C<I<RRGGBB>>/C<I<RRRGGGBBB>>/...
 
 =item *
 
 A color name accepted by C<Graphics::ColorNames>.
 
-=item *
-
-A C<PDF::API2::Color> reference.
-
-=item *
-
 A C<Graphics::ColorObject> reference.
+
+=item *
+
+A list of three values in the range C<0>..C<255> corresponding to the red,
+green, and blue component where the first value does not have 3 or a multiple
+of 3 digits (e.g. C<('0128',128,128)>).
 
 =item * 
 
-A return value of any (public) C<Color::Calc> method even if the
-C<tuple> output format is selected.
+A return value of any (public) C<Color::Calc> method even if the C<tuple>
+output format is selected.
 
 =back
 
@@ -371,15 +375,15 @@ Returns a hexadecimal RGB value in the format RRGGBB.
 Returns a value compatible with W3C's HTML and CSS specifications,
 i.e.  I<#RRGGBB> or one of the sixteen color names.
 
-=item pdf
-
-Returns a C<PDF::API2::Color> reference. The module
-C<PDF::API2::Color> must be installed.
-
 =item object
 
 Returns a C<Graphics::ColorObject> reference. The module
 C<Graphics::ColorObject> must be installed.
+
+=item pdf
+
+Returns a value which can be passed to C<PDF::API2::Content>'s fillcolor and
+strokecolor methods.
 
 =item __MODEvar
 
@@ -598,6 +602,7 @@ C<_I<output_format>> to select the output format:
 =head1 SEE ALSO
 
 L<Graphics::ColorNames> (required);
+
 L<Graphics::ColorObject> (optional)
 
 =head1 AUTHOR
