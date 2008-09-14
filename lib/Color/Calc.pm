@@ -3,6 +3,7 @@
 package Color::Calc;
 
 use strict;
+use utf8;
 use warnings;
 
 use Carp;
@@ -479,7 +480,7 @@ the C<OutputFormat> and a C<ColorScheme> incompatible with HTML
 (e.g. C<X>). (This may change in future versions.)
 
 (Note: The module internally only works with color values in the
-integer range 0..255, i.e. 8 bit precision. This may change in
+integer range 0..255, i.e. 8Â bit precision. This may change in
 future versions.)
 
 =head3 Input
@@ -665,7 +666,7 @@ L<Graphics::ColorObject> (optional)
 
 =head1 AUTHOR/LICENSE
 
-Copyright © 2004-2008 Claus Färber <CFAERBER@cpan.org>
+Copyright Â© 2004-2008 Claus FÃ¤rber <CFAERBER@cpan.org>
 
 This module is free software; you can redistribute it and/or
 modify it under the terms of either the GNU General Public License
@@ -679,7 +680,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-MA 02110-1301, USA.
+MAÂ 02110-1301, USA.
 
 =cut
 

@@ -3,6 +3,7 @@
 package Color::Calc::WWW;
 
 use strict;
+use utf8;
 use warnings;
 use Carp;
 
@@ -14,7 +15,7 @@ our $VERSION = 1.05;
 our @ISA = qw(Exporter);
 our @EXPORT = ('color', map { 'color_'.$_ } @Color::Calc::__subs);
 
-=pod
+=head1 NAME
 
 Color::Calc::WWW - Simple calculations with colors for the WWW.
 
