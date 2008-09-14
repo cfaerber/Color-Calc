@@ -3,7 +3,7 @@ package Color::Calc;
 use strict;
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 
-our $VERSION = 0.02;
+our $VERSION = 0.10;
 our $AUTOLOAD;
 
 use Exporter;
@@ -46,16 +46,16 @@ All of the functions accept colors as parameters in the following formats:
 
 =over 4
 
-=item * 
+=item *
 
 An arrayref pointing to an array with three elements in the range 0..255
 corresponding to the red, green, and blue component.
 
-=item * 
+=item *
 
 A string containing a hexadecimal RGB value in the form of #RRGGBB or RRGGBB.
 
-=item * 
+=item *
 
 A color name accepted by C<Graphics::ColorNames>.
 
@@ -103,7 +103,7 @@ The functions are exported by default with a prefix of C<color_>:
 If you prefer not to import the functions, you can call them by specifying the
 package name:
 
-  use Color::Calc ()
+  use Color::Calc ();
   print Color::Calc::dark_hex('#FFFFFF'); # returns '808080';
 
 =back
@@ -143,7 +143,7 @@ sub get
 
 =item * mix($color1, $color2, $alpha)
 
-Returns a color that is the mixture of $color1 and $color2. 
+Returns a color that is the mixture of $color1 and $color2.
 
 The optional $alpha parameter can be a value between 0.0 (use
 $color1 only) and 1.0 (use $color2 only), the default is 0.5.
@@ -212,9 +212,7 @@ sub light {
   return mix($_[0],'FFFFFF',$_[1]);
 }
 
-=item * invert($color)
-
-Returns the inverse color.
+=item * dark($color)
 
 Returns a darker version of $color, i.e. returns
 mix($color,'000000',$alpha);
@@ -225,11 +223,42 @@ sub dark {
   return mix($_[0],'000000',$_[1]);
 }
 
+=item * grey($color)
+
+Converts $color to greyscale.
+
+=cut
+
+sub grey {
+  my @c = get(@_);
+  my $g = ($c[0] + $c[1] + $c[2]) / 3;
+  return ($g,$g,$g);
+}
+
+=item * contrast_bw($color)
+
+Returns black or white, whichever has the higher contrast to $color.
+
+=cut
+
+sub contrast_bw {
+  return contrast(grey(@_));
+}
+
+=item * blend_bw($color,$alpha)
+
+Returns a mix of $color and black or white, whichever has the higher contrast
+to $color.
+
+sub blend_bw {
+  return mix($_[0],[contrast_bw($_[0])],$_[1]);
+}
+
 =back
 
 =cut
 
-sub AUTOLOAD 
+sub AUTOLOAD
 {
   {
     no strict 'refs';
@@ -247,16 +276,17 @@ sub AUTOLOAD
       *$AUTOLOAD = \&$name;
       goto &$AUTOLOAD;
     }
-
-    else {
-      die 'Blubb.';
-    }
   }
 }
 
 1;
 
 __END__
+
+=head1 SEE ALSO
+
+L<Graphics::ColorNames>
+L<Color::Object>
 
 =head1 AUTHOR
 
@@ -266,6 +296,6 @@ Claus A. Färber <perl@faerber.muc.de>
 
 Copyright © 2003 Claus A. Färber All rights reserved. This program
 is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself. 
+the same terms as Perl itself.
 
 =cut

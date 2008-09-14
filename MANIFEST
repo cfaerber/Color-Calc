@@ -1,5 +1,6 @@
 README
-MANIFEST			This list of files
+MANIFEST
 Changes
 Calc.pm
 Makefile.PL
+t/1use.t
