@@ -9,20 +9,20 @@ use Params::Validate qw(:all);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML;
 
-our $VERSION = '0.29_0001';
+our $VERSION = '0.29_0003';
 $VERSION = eval $VERSION;
 
 our $MODE = ();
 
 my %__HTMLColors = ();
-our @__subs = qw( blend blend_bw bw contrast contrast_bw dark get grey invert light mix );
+our @__subs = qw( blend blend_bw bw contrast contrast_bw dark get grey gray invert light mix );
 
 my %__formats = (
-  'tuple'	=> sub { return @_; },
+  'tuple'	=> sub { return __normtuple_out(@_); },
   'hex'		=> sub { return tuple2hex((@_)); },
   'html'	=> sub { my $col = lc(tuple2hex((@_))); return $__HTMLColors{$col} || '#'.$col; },
   'object'	=> sub { eval { require Graphics::ColorObject; }; return Graphics::ColorObject->new_RGB255( [(@_)] ); },
-  'pdf'		=> sub { eval { require PDF::API2::Color; }; return  PDF::API2::Color->newRGB( map { $_ / 255 } ((@_))); },
+# 'pdf'		=> sub { eval { require PDF::API2::Color; }; return  PDF::API2::Color->newRGB( map { $_ / 255 } ((@_))); },
 );
 my @__formats = keys %__formats;
 my $__formats_re = join('|', @__formats,'__MODEvar');
@@ -58,13 +58,13 @@ sub new {
   return $self;
 }
 
-my $__default_object;
+my $__default_object = undef;
 sub __get_default {
   $__default_object = __PACKAGE__->new('OutputFormat' => '__MODEvar') unless $__default_object;
   return $__default_object;
 }
 
-my $__tuple_object;
+my $__tuple_object = undef;
 sub __get_tuple {
   $__tuple_object = __PACKAGE__->new('OutputFormat' => 'tuple') unless $__tuple_object;
   return $__tuple_object;
@@ -85,7 +85,7 @@ sub import {
     local $Exporter::ExportLevel; $Exporter::ExportLevel++;
     return Exporter::import($pkg, @_);
   }
-  __import(caller(0),@_);
+  return __import(scalar caller(0),@_) ? 1 : 0;
 }
 
 sub __import {
@@ -118,6 +118,7 @@ sub __import {
       *$name = sub { $obj->get(@_); };
     }
   }
+  return 1;
 }
 
 
@@ -207,14 +208,12 @@ sub set_output_format {
 
 sub __put {
   my $self = shift;
-  return $self->{'__put'}->(@_);
+  return $self->{'__put'}->(__normtuple_in(@_));
 }
 
 sub __get_self {
-  my $p = shift;
-
-  if(UNIVERSAL::isa($p->[0], __PACKAGE__)) {
-    return shift @$p;
+  if(UNIVERSAL::isa($_[0]->[0], __PACKAGE__)) {
+    return shift @{$_[0]};
   } else {
     return __get_default;
   }
@@ -222,25 +221,23 @@ sub __get_self {
 
 sub get { 
   my $self = __get_self(\@_); 
-  return $self->__put(__normtuple_out($self->__get(\@_))); 
+  return $self->__put($self->__get(\@_)); 
 }
-
 
 sub invert {
   my $self = __get_self(\@_);
-  return __normtuple_out(map { 255 - $_ } $self->__get(\@_));
+  return $self->__put(map { 255 - $_ } $self->__get(\@_));
 }
 
 sub bw {
   my $self = __get_self(\@_);
   my @c = $self->__get(\@_);
   my $g = $c[0]*.3 + $c[1]*.59 + $c[2]*.11;
-  return _put(__normtuple($g,$g,$g));
+  return $self->__put(__normtuple($g,$g,$g));
 }
 
 *grey = \&bw;
 *gray = \&bw;
-
 
 sub mix {
   my $self = __get_self(\@_);
@@ -259,12 +256,10 @@ sub light {
   return $self->__put(__get_tuple->mix([$self->__get(\@_)],[255,255,255],shift));
 }
 
-
 sub dark {
   my $self = __get_self(\@_);
   return $self->__put(__get_tuple->mix([$self->__get(\@_)],[0,0,0],shift));
 }
-
 
 sub contrast {
   my $self = __get_self(\@_);
@@ -273,26 +268,23 @@ sub contrast {
   return $self->__put(map { $_ >= $cut ? 0 : '0255' } @rgb);
 }
 
-
 sub contrast_bw {
   my $self = __get_self(\@_);
-  return $self->__put(__get_tuple->contrast([grey_tuple(@_)], shift));
+  my @rgb = $self->__get(\@_);
+  return $self->__put(__get_tuple->contrast([__get_tuple->bw(@rgb)], shift));
 }
-
 
 sub blend {
   my $self = __get_self(\@_);
   my @c1 = $self->__get(\@_);
-  return __get_tuple->mix(\@c1,[contrast(\@c1)],shift);
+  return $self->mix(\@c1,[__get_tuple->contrast(\@c1)],shift);
 }
-
 
 sub blend_bw {
   my $self = __get_self(\@_);
   my @c = $self->__get(\@_);
-  return __get_tuple->mix(\@c,[contrast_bw(\@c)],shift);
+  return $self->mix(\@c,[__get_tuple->contrast_bw(\@c)],shift);
 }
-
 
 foreach my $format (@__formats) {
   __import(__PACKAGE__, 'Prefix' => 'color', '__Suffix' => "_$format", 'OutputFormat' => $format);
@@ -300,9 +292,6 @@ foreach my $format (@__formats) {
 }
 
 __import(__PACKAGE__, 'Prefix' => 'color', 'OutputFormat' => '__MODEvar');
-
-#- -----------------------------
-#
 
 =head1 NAME
 
@@ -555,7 +544,7 @@ with pre-defined parameters.
 
 =item C<use Color::Calc::WWW>
 
-Same as C<use Color::Calc( ColorScheme =&gt; 'Netscape', OutputFormat => 'html' )>
+Same as C<use Color::Calc( ColorScheme =&gt; 'WWW', OutputFormat => 'html' )>
 
 =item C<use Color::Calc::html>
 

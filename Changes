@@ -1,5 +1,11 @@
 Revision history for Perl extension Color::Calc.
 
+0.29_0002 Sat Mar 26 16:20:00 2005
+	- Color::Calc::WWW now uses Graphics::ColorNames::WWW
+	- Color::Calc::WWW was missing from distribution
+	- removed 'pdf' output format as PDF::API2::Color is no longer
+	- complete test suite
+
 0.29_0001 Fri Mar 25 12:00:00 2005
 	- added object-orientated interface
 	- added procedural interface with customisation on import
