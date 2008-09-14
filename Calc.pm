@@ -1,4 +1,4 @@
-# $Id: Calc.pm,v 1.17 2006/11/13 21:42:16 cfaerber Exp $
+# $Id: Calc.pm,v 1.20 2006/12/10 21:29:45 cfaerber Exp $
 #
 package Color::Calc;
 
@@ -12,7 +12,7 @@ use POSIX;
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML;
 
-our $VERSION = '1.02';
+our $VERSION = '1.04';
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -26,7 +26,7 @@ my %__formats = (
   'html'	=> sub { my $col = lc(tuple2hex((@_))); return $__HTMLColors{$col} || '#'.$col; },
   'object'	=> sub { eval { require Graphics::ColorObject; }; return Graphics::ColorObject->new_RGB255( [(@_)] ); },
   'obj'		=> sub { eval { require Color::Object; }; return Color::Object->newRGB(map { 255*$_; } @_); },
-  'pdf'		=> sub { return sprint('#%%04x%%04x%%04x',(map { 257*$_ } @_)) },
+  'pdf'		=> sub { return '#'.(tuple2hex(@_)) },
 );
 
 my @__formats = keys %__formats;
@@ -316,83 +316,16 @@ The C<Color::Calc> module implements simple calculations with RGB
 colors. This can be used to create a full color scheme from a few
 colors.
 
-=head2 Color Formats
+=head2 Using the calculation functions
 
-=head3 Input
+There are three methods to use the calculation functions: You can
+create an object, import customised functions into your namespace,
+or you can access them as class methods.  
 
-All of the methods accept colors as parameters in the following
-formats:
+=head3 Object-oriented interface
 
-=over
-
-=item * 
-
-An arrayref pointing to an array with three elements in the range
-C<0>..C<255> corresponding to the red, green, and blue component.
-
-
-=item * 
-
-A string containing a hexadecimal RGB value like
-C<#I<RGB>>/C<#I<RRGGBB>>/C<#I<RRRGGGBBB>>/... or
-C<I<RGB>>/C<I<RRGGBB>>/C<I<RRRGGGBBB>>/...
-
-=item *
-
-A color name accepted by C<Graphics::ColorNames>.
-
-A C<Graphics::ColorObject> reference.
-
-=item *
-
-A list of three values in the range C<0>..C<255> corresponding to the red,
-green, and blue component where the first value does not have 3 or a multiple
-of 3 digits (e.g. C<('0128',128,128)>).
-
-=item * 
-
-A return value of any (public) C<Color::Calc> method even if the C<tuple>
-output format is selected.
-
-=back
-
-=head3 Output
-
-C<Color::Calc> can return colors in the following modes:
-
-=over
-
-=item tuple
-
-Returns a list of three values in the range 0..255.
-
-=item hex
-
-Returns a hexadecimal RGB value in the format RRGGBB.
-
-=item html
-
-Returns a value compatible with W3C's HTML and CSS specifications,
-i.e.  I<#RRGGBB> or one of the sixteen color names.
-
-=item object
-
-Returns a C<Graphics::ColorObject> reference. The module
-C<Graphics::ColorObject> must be installed.
-
-=item pdf
-
-Returns a value which can be passed to C<PDF::API2::Content>'s fillcolor and
-strokecolor methods.
-
-=item __MODEvar
-
-(DEPRECATED) Uses the value of C<$Color::Calc::MODE> to select the
-output format. You should use C<local> when setting this variable.
-
-=back
-
-=head2 Object-Orientated interface
+The object-oriented interface can be used to access the calculation functions
+through an object reference:
 
   use Color::Calc();
   my $cc = new Color::Calc( 'ColorScheme' => 'X', OutputFormat => 'HTML' );
@@ -404,109 +337,32 @@ output format. You should use C<local> when setting this variable.
 
   $cc = new Color::Calc( 'ColorScheme' => $name, 'OutputFormat' => $format );
 
-Creates a new C<Color::Calc> object which can be used to access the color
-calculation methods.  
+Creates a new C<Color::Calc> object. The constructor can be passed
+the following options:
 
 =over
 
 =item ColorScheme
 
-One of the color schemes accepted by C<Graphics::ColorNames>. Used to translate
-color names on input. See the documentation of C<Graphics::ColorNames> for
-possible values.
+One of the color schemes accepted by C<Graphics::ColorNames>,
+which is used to interpret color names on input. Valid values
+include C<X> (color names used in X-Windows) and C<HTML> (color
+names defined in the HTML 4.0 specification). For a full list of
+possible values, please refer to the documentation of of
+C<Graphics::ColorNames>.
 
-Default: C<X> (please note that this is incompatible with HTML
-color names).
+Default: C<X> (Note: This is incompatible with HTML color names).
 
 =item OutputFormat
 
-Sets the output format of the object's methods. See above for possible values.
+One of the output formats defined by this module. See below for
+possible values.
 
 Default: C<__MODEvar>
 
 =back
 
-=item $cc->get($color)
-
-Returns the color as-is (but in the selected output format). This
-function can be used for color format conversion/normalisation.
-
-=item $cc->invert($color)
-
-Returns the inverse of $color.
-
-=item $cc->bw($color)
-=item $cc->grey($color)
-
-Converts $color to greyscale.
-
-=item $cc->mix($color1, $color2 [, $alpha])
-
-Returns a color that is the mixture of $color1 and $color2.
-
-The optional $alpha parameter can be a value between 0.0 (use $color1
-only) and 1.0 (use $color2 only), the default is 0.5.
-
-=item $cc->color_light($color [, $alpha])
-
-Returns a lighter version of $color, i.e. returns
-$cc->mix($color,[255,255,255],$alpha);
-
-The optional $alpha parameter can be a value between 0.0 (use $color
-only) and 1.0 (use 'white' only), the default is 0.5.
-
-=item $cc->dark($color [, $alpha])
-
-Returns a darker version of $color, i.e. returns
-$cc->mix($color,[0,0,0],$alpha);
-
-The optional $alpha parameter can be a value between 0.0 (use $color
-only) and 1.0 (use 'black' only), the default is 0.5.
-
-=item $cc->contrast($color [, $cut])
-
-Returns a color that has the highest possible contrast to the input
-color.
-
-This is done by setting the red, green, and blue values to 0 if the
-corresponding value in the input is above C<($cut * 255)> and to 255 otherwise.
-
-The default for C<$cut> is .5, representing a cutoff between 127 and 128.
-
-=item $cc->contrast_bw($color [, $cut])
-
-Returns black or white, whichever has the higher contrast to $color.
-
-This is done by setting returning black if the grey value of $color is above
-C<($cut * 255)> and white otherwise.
-
-The default for C<$cut> is .5, representing a cutoff between 127 and 128.
-
-=item $cc->blend($color [, $alpha])
-
-Returns a color that blends into the background, i.e. it returns
-$cc->mix($color,$cc->contrast($color),$alpha).
-
-The optional $alpha parameter can be a value between 0.0 (use $color
-only) and 1.0 (use C<contrast($color)> only), the default is 0.5.
-
-The idea is that C<$color> is the foreground color, so C<contrast($color)> is
-similar to the background color. Mixing them returns a color somewhere between
-them.
-You might want to use mix($color, $background, $alpha) instead if you know the
-real background color.
-
-=item $cc->blend_bw($color [, $alpha])
-
-Returns a mix of $color and black or white, whichever has the higher contrast
-to $color.
-
-The optional $alpha parameter can be a value between 0.0 (use $color
-only) and 1.0 (use black/white only), the default is 0.5.
-
-=back
-
-=head2 Procedural Interface With Importing
+=head3 Importing customised functions
 
 You can also choose to import customised funtions into your
 namespace:
@@ -531,9 +387,10 @@ See above.
 
 =item Prefix
 
-Adds the prefix and an underscore to the front of the method
-names. You can call the methods as I<prefix>_I<method_name>.  You
-can also call I<prefix> instead of I<prefix>C<_get>.
+Adds a prefix to the front of the method names. You can call the
+methods as I<prefix>_I<method_name> (the specified value plus an
+underscore plus the method name). You can also call I<prefix>
+instead of I<prefix>C<_get>.
 
 Default: C<color>
 
@@ -550,11 +407,11 @@ with pre-defined parameters.
 
 =item C<use Color::Calc::WWW>
 
-Same as C<use Color::Calc( ColorScheme =&gt; 'WWW', OutputFormat => 'html' )>
+Same as C<use Color::Calc( ColorScheme => 'WWW', OutputFormat => 'html' )>
 
 =item C<use Color::Calc::html>
 
-(DEPRECATED) Same as C<use Color::Calc( OutputFormat =&gt; 'html')>
+(DEPRECATED) Same as C<use Color::Calc( OutputFormat => 'html')>
 
 Please note that this only selects HTML as the C<OutputFormat> but
 not as the C<ColorScheme> (which defaults to 'X'), which is
@@ -562,23 +419,23 @@ probably not what you expect. Use C<Color::Calc::WWW> instead.
 
 =item C<use Color::Calc::hex>
    
-Same as C<use Color::Calc( OutputFormat =&gt; 'hex')>
+Same as C<use Color::Calc( OutputFormat => 'hex')>
 
 =item C<use Color::Calc::object>
    
-Same as C<use Color::Calc( OutputFormat =&gt; 'object')>
+Same as C<use Color::Calc( OutputFormat => 'object')>
 
 =item C<use Color::Calc::pdf>
    
-Same as C<use Color::Calc( OutputFormat =&gt; 'pdf')>
+Same as C<use Color::Calc( OutputFormat => 'pdf')>
 
 =item C<use Color::Calc::tuple>
    
-Same as C<use Color::Calc( OutputFormat =&gt; 'tuple')>
+Same as C<use Color::Calc( OutputFormat => 'tuple')>
 
 =back
 
-=head2 Procedural Interface Without Importing
+=head3 Calling unimported class functions
 
 (DEPRECATED) You can also access the methods as class methods of
 the various packages with and without the C<color> prefix:
@@ -598,6 +455,196 @@ C<_I<output_format>> to select the output format:
   print Color::Calc::color_invert_html('FFF');	# prints 'black'
   print Color::Calc::invert_hex('FFF');		# prints '000000'
 
+=head2 Color formats
+
+The module supports different color formats for in- and output.
+
+As a general rule, all input formats are accepted at any time
+regardless of the output format specified by C<OutputFormat>. This
+also means that function calls can be nested easily:
+
+  print color_invert(color_invert('blue'));
+
+Note: Nesting does not work as expected if you specify C<html> as
+the C<OutputFormat> and a C<ColorScheme> incompatible with HTML
+(e.g. C<X>). (This may change in future versions.)
+
+(Note: The module internally only works with color values in the
+integer range 0..255, i.e. 8 bit precision. This may change in
+future versions.)
+
+=head3 Input
+
+The module accepts color values in the following formats:
+
+=over
+
+=item * 
+
+An arrayref pointing to an array with three elements in the range
+C<0>..C<255> corresponding to the red, green, and blue component.
+
+=item *
+
+A list of three values in the range C<0>..C<255> corresponding to the red,
+green, and blue component where the first value does not have 3 or a multiple
+of 3 digits (e.g. C<('0128',128,128)>).
+
+=item * 
+
+A string containing a hexadecimal RGB value like
+C<#I<RGB>>/C<#I<RRGGBB>>/C<#I<RRRGGGBBB>>/..., or
+C<I<RGB>>/C<I<RRGGBB>>/C<I<RRRGGGBBB>>/...
+
+=item *
+
+A color name accepted by C<Graphics::ColorNames>. The
+interpretation is controlled by the C<ColorScheme> parameter.
+
+=item *
+
+A C<Graphics::ColorObject> reference.
+
+=back
+
+=head3 Output
+
+C<Color::Calc> can return colors in the following formats
+
+=over
+
+=item tuple
+
+Returns a list of three values in the range 0..255. The first value is
+guaranteed to have a C<length> that is not a multiple of three.
+
+=item hex
+
+Returns a hexadecimal RGB value as a string in the format RRGGBB.
+
+(Note: future versions may return an object that mimics a string
+instead.)
+
+=item html
+
+Returns a string compatible with W3C's HTML and CSS specifications,
+i.e. I<#RRGGBB> or one of the sixteen HTML color names.
+
+(Note: future versions may return an object that mimics a string
+instead.)
+
+=item object
+
+Returns a C<Graphics::ColorObject> reference. The module
+C<Graphics::ColorObject> must be installed.
+
+=item pdf
+
+Returns a string compatible with C<PDF::API2>, i.e. I<#RRGGBB>.
+
+(Note: future versions may return an object that mimics a string
+instead.)
+
+=item __MODEvar
+
+(DEPRECATED) Uses the value of C<$Color::Calc::MODE> to select one
+of the above output formats. You should use C<local> when setting
+this variable.
+
+=back
+
+=head2 Calculation functions
+
+The module supports the following calculation functions, which can
+be accessed through one of the methods described above:
+
+=item get($color)
+
+Returns C<$color> as-is (but in the selected output format). This
+function can be used for color format conversion/normalisation.
+
+=item invert($color)
+
+Returns the inverse of C<$color>.
+
+=item bw($color)
+
+=item grey($color) 
+
+=item gray($color)
+
+Converts C<$color> to greyscale.
+
+=item mix($color1, $color2 [, $alpha])
+
+Returns a color that is the mixture of C<$color1> and C<$color2>.
+
+The optional C<$alpha> parameter can be a value between 0.0 (use
+C<$color1> only) and 1.0 (use C<$color2> only), the default is
+0.5.
+
+=item color_light($color [, $alpha])
+
+Returns a lighter version of C<$color>, i.e. returns
+C<mix($color,[255,255,255],$alpha)>.
+
+The optional C<$alpha> parameter can be a value between 0.0 (use C<$color>
+only) and 1.0 (use [255,255,255] only), the default is 0.5.
+
+=item dark($color [, $alpha])
+
+Returns a darker version of C<$color>, i.e. returns
+C<mix($color,[0,0,0],$alpha)>.
+
+The optional C<$alpha> parameter can be a value between 0.0 (use
+C<$color> only) and 1.0 (use [0,0,0] only), the default is 0.5.
+
+=item contrast($color [, $cut])
+
+Returns a color that has the highest possible contrast to the input
+color.
+
+This is done by setting the red, green, and blue values to 0 if
+the corresponding value in the input is above C<($cut * 255)> and
+to 255 otherwise.
+
+The default for C<$cut> is .5, representing a cutoff between 127 and 128.
+
+=item contrast_bw($color [, $cut])
+
+Returns black or white, whichever has the higher contrast to C<$color>.
+
+This is done by returning black if the grey value of C<$color> is
+above C<($cut * 255)> and white otherwise.
+
+The default for C<$cut> is .5, representing a cutoff between 127 and 128.
+
+=item blend($color [, $alpha])
+
+Returns a color that blends into the background, i.e. it returns
+C<mix($color,contrast($color),$alpha)>.
+
+The optional C<$alpha> parameter can be a value between 0.0 (use
+C<$color> only) and 1.0 (use C<contrast($color)> only), the
+default is 0.5.
+
+The idea is that C<$color> is the foreground color, so
+C<contrast($color)> is similar to the background color. Mixing
+them returns a color somewhere between them.
+
+You might want to use C<mix($color, $background, $alpha)> instead
+if you know the real background color.
+
+=item blend_bw($color [, $alpha])
+
+Returns a mix of C<$color> and black or white, whichever has the
+higher contrast to C<$color>.
+
+The optional C<$alpha> parameter can be a value between 0.0 (use
+C<$color> only) and 1.0 (use black/white only), the default is
+0.5.
+
+=back
 
 =head1 SEE ALSO
 

@@ -3,6 +3,7 @@ Calc/WWW.pm	Color::Calc::WWW
 Calc/hex.pm	Color::Calc::hex
 Calc/html.pm	Color::Calc::html
 Calc/object.pm	Color::Calc::object
+Calc/pdf.pm	Color::Calc::pdf
 Calc/tuple.pm	Color::Calc::tuple
 Changes
 Makefile.PL
