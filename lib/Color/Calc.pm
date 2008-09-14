@@ -306,10 +306,10 @@ Color::Calc - Simple calculations with RGB colors.
 
   use Color::Calc ();
   my $background = 'green';
-  print 'background: ',Color::Calc::color_html($background),';';
-  print 'border-top: solid 1px ',Color::Calc::light_html($background),';';
-  print 'border-bottom: solid 1px ',Color::Calc::dark_html($background),';';
-  print 'color: ',contrast_bw_html($background),';';
+  print 'background: ',Color::Calc::color_html($background),";\n";
+  print 'border-top: solid 1px ',Color::Calc::light_html($background),";\n";
+  print 'border-bottom: solid 1px ',Color::Calc::dark_html($background),";\n";
+  print 'color: ',Color::Calc::contrast_bw_html($background),";\n";
 
 =head1 DESCRIPTION
 
@@ -453,7 +453,7 @@ the various packages with and without the C<color> prefix:
 
   print Color::Calc::WWW::color('FFF');		# prints 'white'
   print Color::Calc::WWW::color_invert('FFF');	# prints 'black'
-  print Color::Calc::html::invert('FFF');	# prints 'black'
+  print Color::Calc::WWW::invert('FFF');	# prints 'black'
 
 For the main module C<Color::Calc>, you can also add a suffix
 C<_I<output_format>> to select the output format:
@@ -462,7 +462,7 @@ C<_I<output_format>> to select the output format:
 
   print Color::Calc::color_html('FFF');		# prints 'white'
   print Color::Calc::color_invert_html('FFF');	# prints 'black'
-  print Color::Calc::invert_hex('FFF');		# prints '000000'
+  print Color::Calc::color_invert_hex('FFF');	# prints '000000'
 
 =head2 Color formats
 
