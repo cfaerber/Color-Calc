@@ -1,6 +1,7 @@
-# $Id: 19_DEPRECATED_module_import_object.t,v 1.3 2005/09/24 17:36:28 cfaerber Exp $
+# $Id: 19_DEPRECATED_module_import_object.t,v 1.4 2006/11/12 21:25:41 cfaerber Exp $
 #
 use Test::More tests => 13;
+use Color::Calc::object;
 
 SKIP: {
 eval { require Graphics::ColorObject; };

@@ -1,4 +1,4 @@
-# $Id: Calc.pm,v 1.13 2005/09/24 17:36:15 cfaerber Exp $
+# $Id: Calc.pm,v 1.14 2006/11/12 21:37:03 cfaerber Exp $
 #
 package Color::Calc;
 
@@ -12,7 +12,7 @@ use POSIX;
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 $VERSION = eval $VERSION;
 
 our $MODE = ();
