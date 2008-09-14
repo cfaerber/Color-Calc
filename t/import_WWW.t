@@ -1,10 +1,10 @@
-# $Id: 19_DEPRECATED_module_import_html.t,v 1.2 2005/04/09 20:49:59 cfaerber Exp $
+# $Id$
 #
 use Test::More tests => 14;
-use Color::Calc::html;
+use Color::Calc::WWW;
 
 is(color_get		('F00'),		'red');
-is(color_get		('green'),		'lime');	# !!! input uses X11 color names !!!
+is(color_get		('green'),		'green');
 
 is(color		('F00'),		'red');
 is(color_mix		('red','blue'),		'purple');

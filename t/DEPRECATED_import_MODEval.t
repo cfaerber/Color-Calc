@@ -1,10 +1,9 @@
-# $Id: 11_import_MODEval.t,v 1.3 2005/09/24 17:36:28 cfaerber Exp $
+# $Id$
 #
 use Test::More tests => 52;
 use Color::Calc;
 
 local $Color::Calc::MODE = 'hex';
-
 is(color_get		('red'),		'ff0000');
 is(color		('red'),		'ff0000');
 is(color_mix		('red','blue'),		'800080');
@@ -38,8 +37,8 @@ is(color_light		('red'),		'#ff8080');
 
 local $Color::Calc::MODE = 'object';
 SKIP: {
-  eval { require Graphics::ColorObject; };
-  skip "Graphics::ColorObject not installed", 13 if $@;
+eval { require Graphics::ColorObject; };
+skip "Graphics::ColorObject not installed", 13 if $@;
 
 is(lc color_get		('red')->as_RGBhex,		'ff0000');
 is(lc color		('red')->as_RGBhex,		'ff0000');

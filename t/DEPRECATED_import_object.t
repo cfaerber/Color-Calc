@@ -1,4 +1,4 @@
-# $Id: 19_DEPRECATED_module_import_object.t,v 1.6 2006/12/10 21:29:45 cfaerber Exp $
+# $Id$
 #
 use Test::More tests => 13;
 

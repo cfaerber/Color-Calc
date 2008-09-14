@@ -1,4 +1,4 @@
-# $Id: 10_object-orientated.t,v 1.2 2005/04/09 20:49:58 cfaerber Exp $
+# $Id$
 #
 use Test::More tests => 48;
 use Color::Calc();

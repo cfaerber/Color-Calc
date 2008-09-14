@@ -1,4 +1,4 @@
-# $Id: 11_import_object.t,v 1.3 2005/09/24 17:36:28 cfaerber Exp $
+# $Id$
 #
 use Test::More tests => 13;
 use Color::Calc( 'OutputFormat' => 'object' );

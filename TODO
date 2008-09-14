@@ -1,0 +1,3 @@
+- allow custom functions for output (e.g. to simulate color defiencies)
+- allow calculations in non-RGB color formats
+- rename to Graphics::ColorCalc

@@ -1,4 +1,4 @@
-# $Id: 11_import_hex.t,v 1.2 2005/04/09 20:49:58 cfaerber Exp $
+# $Id$
 #
 use Test::More tests => 13;
 use Color::Calc( 'OutputFormat' => 'hex' );

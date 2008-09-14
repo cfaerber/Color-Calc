@@ -1,12 +1,10 @@
-# $Id: 12_import_module_WWW.t,v 1.2 2005/04/09 20:49:59 cfaerber Exp $
+# $Id$
 #
-use Test::More tests => 14;
-use Color::Calc::WWW;
+use Test::More tests => 13;
+use Color::Calc( 'OutputFormat' => 'html' );
 
 is(color_get		('F00'),		'red');
-is(color_get		('green'),		'green');
-
-is(color		('F00'),		'red');
+is(color    		('F00'),		'red');
 is(color_mix		('red','blue'),		'purple');
 
 is(color_blend_bw	('red'),		'#ff8080');

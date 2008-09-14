@@ -1,4 +1,4 @@
-# $Id: 18_DEPRECATED_import_suffix.t,v 1.3 2005/09/24 17:36:28 cfaerber Exp $
+# $Id$
 #
 use Test::More tests => 52;
 use Color::Calc;
