@@ -1,4 +1,4 @@
-# $Id: Calc.pm,v 1.14 2006/11/12 21:37:03 cfaerber Exp $
+# $Id: Calc.pm,v 1.17 2006/11/13 21:42:16 cfaerber Exp $
 #
 package Color::Calc;
 
@@ -12,7 +12,7 @@ use POSIX;
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -607,13 +607,25 @@ L<Graphics::ColorObject> (optional)
 
 =head1 AUTHOR
 
-Claus A. Färber <perl@faerber.muc.de>
+Claus Färber <cfaerber@cpan.org>
 
 =head1 COPYRIGHT
 
-Copyright © 2004, 2005 Claus A. Färber All rights reserved. This program is
-free software; you can redistribute it and/or modify it under the same terms as
-Perl itself.
+Copyright © 2004-2006 Claus Färber
+
+This module is free software; you can redistribute it and/or
+modify it under the terms of either the GNU General Public License
+as published by the Free Software Foundation; either version 1, or
+(at your option) any later version, or the "Artistic License".
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA 02110-1301, USA.
 
 =cut
 

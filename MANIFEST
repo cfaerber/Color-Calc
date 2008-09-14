@@ -1,13 +1,12 @@
-Calc.pm
-Calc/WWW.pm
-Calc/hex.pm
-Calc/html.pm
-Calc/object.pm
-Calc/tuple.pm
+Calc.pm	Color::Calc
+Calc/WWW.pm	Color::Calc::WWW
+Calc/hex.pm	Color::Calc::hex
+Calc/html.pm	Color::Calc::html
+Calc/object.pm	Color::Calc::object
+Calc/tuple.pm	Color::Calc::tuple
 Changes
 Makefile.PL
 MANIFEST
-META.yml
 README
 t/00_basic.t
 t/10_object-orientated.t
@@ -31,3 +30,4 @@ t/21_input_formats_import.t
 t/30_color_schemes_oo.t
 t/31_color_schemes_import_HTML.t
 t/31_color_schemes_import_X.t
+META.yml                                 Module meta-data (added by MakeMaker)

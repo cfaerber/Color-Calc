@@ -1,5 +1,8 @@
 Revision history for Perl extension Color::Calc.
 
+1.02 Mon Nov 13 00:00:00 2006
+	- fixed tests without Graphics::ColorObject
+
 1.01 Sat Nov 11 11:11:11 2006
 	- fixed tests w/ Graphics::ColorObject (reported by
 	  Ernesto Hernández-Novich)
@@ -48,4 +51,4 @@ Revision history for Perl extension Color::Calc.
 0.02  Sat Apr 26 00:00:00 2003
 	- first public release
 
-$Id: Changes,v 1.12 2006/11/12 21:43:15 cfaerber Exp $	
+$Id: Changes,v 1.13 2006/11/13 21:05:35 cfaerber Exp $	

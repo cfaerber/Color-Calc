@@ -1,4 +1,4 @@
-# $Id: 19_DEPRECATED_module_import_object.t,v 1.4 2006/11/12 21:25:41 cfaerber Exp $
+# $Id: 19_DEPRECATED_module_import_object.t,v 1.5 2006/11/13 21:04:58 cfaerber Exp $
 #
 use Test::More tests => 13;
 use Color::Calc::object;
@@ -6,6 +6,8 @@ use Color::Calc::object;
 SKIP: {
 eval { require Graphics::ColorObject; };
 skip "Graphics::ColorObject not installed", 13 if $@;
+require Color::Calc::object;
+import Color::Calc::object();
 
 is(lc color_get		('red')->as_RGBhex,		'ff0000');
 is(lc color		('red')->as_RGBhex,		'ff0000');

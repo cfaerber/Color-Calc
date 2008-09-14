@@ -1,10 +1,9 @@
-# $Id: 19_DEPRECATED_module_class-method.t,v 1.4 2006/11/12 21:25:41 cfaerber Exp $
+# $Id: 19_DEPRECATED_module_class-method.t,v 1.5 2006/11/13 21:04:58 cfaerber Exp $
 #
 use Test::More tests => 48;
 use Color::Calc::hex();
 use Color::Calc::html();
 use Color::Calc::tuple();
-use Color::Calc::object();
 
 is(Color::Calc::hex::get		('red'),		'ff0000');
 is(Color::Calc::hex::mix		('red','blue'),		'800080');
@@ -37,6 +36,7 @@ is(Color::Calc::html::light		('red'),		'#ff8080');
 SKIP: {
 eval { require Graphics::ColorObject; };
 skip "Graphics::ColorObject not installed", 12 if $@;
+require Color::Calc::object;
 
 is(lc Color::Calc::object::get		('red')->as_RGBhex,		'ff0000');
 is(lc Color::Calc::object::mix		('red','blue')->as_RGBhex,	'800080');
