@@ -3,7 +3,7 @@ package Color::Calc;
 use strict;
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 
-our $VERSION = 0.11;
+our $VERSION = 0.12;
 our $AUTOLOAD;
 
 use Exporter;
@@ -275,7 +275,7 @@ sub AUTOLOAD
       goto &$AUTOLOAD;
     }
 
-    if($AUTOLOAD =~ m/(.*)_hex$/) {
+    if($AUTOLOAD =~ m/(.*)_html$/) {
       my $name = $1;
       *$AUTOLOAD = sub {
         return '#'.tuple2hex(&$name(@_));
