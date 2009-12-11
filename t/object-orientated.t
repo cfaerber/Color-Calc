@@ -1,6 +1,5 @@
-# $Id$
-#
-use Test::More tests => 48;
+use Test::More tests => 49;
+use Test::NoWarnings;
 use Color::Calc();
 
 my $cc = Color::Calc->new( 'OutputFormat' => 'hex' );

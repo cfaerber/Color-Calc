@@ -1,6 +1,5 @@
-# $Id$
-#
-use Test::More tests => 13;
+use Test::More tests => 14;
+use Test::NoWarnings;
 use Color::Calc::hex;
 
 is(color_get		('red'),		'ff0000');

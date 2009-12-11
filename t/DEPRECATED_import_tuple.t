@@ -1,6 +1,5 @@
-# $Id$
-#
-use Test::More tests => 13;
+use Test::More tests => 14;
+use Test::NoWarnings;
 use Color::Calc::tuple;
 
 is(join(',',color_get		('red')),		'0255,0,0');

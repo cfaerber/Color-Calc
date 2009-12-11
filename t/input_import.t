@@ -1,6 +1,5 @@
-# $Id$
-#
-use Test::More tests => 8;
+use Test::More tests => 9;
+use Test::NoWarnings;
 use Color::Calc( 'OutputFormat' => 'hex' );
 
 is(color_mix		('F00','00F'),		'800080');

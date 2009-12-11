@@ -1,6 +1,5 @@
-# $Id$
-#
-use Test::More tests => 14;
+use Test::More tests => 15;
+use Test::NoWarnings;
 use Color::Calc::WWW;
 
 is(color_get		('F00'),		'red');

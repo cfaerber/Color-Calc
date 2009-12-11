@@ -1,6 +1,5 @@
-# $Id$
-#
-use Test::More tests => 52;
+use Test::More tests => 53;
+use Test::NoWarnings;
 use Color::Calc;
 
 local $Color::Calc::MODE = 'hex';
