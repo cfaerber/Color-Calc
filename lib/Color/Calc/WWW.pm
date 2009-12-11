@@ -1,5 +1,3 @@
-# $Id: WWW.pm,v 1.5 2008/09/14 12:30:22 cfaerber Exp $
-#
 package Color::Calc::WWW;
 
 use strict;

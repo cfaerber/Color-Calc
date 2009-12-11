@@ -1,5 +1,3 @@
-# $Id: Calc.pm,v 1.21 2008/09/14 12:30:22 cfaerber Exp $
-#
 package Color::Calc;
 
 use strict;

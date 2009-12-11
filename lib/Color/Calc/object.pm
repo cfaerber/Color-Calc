@@ -1,5 +1,3 @@
-# $Id: object.pm,v 1.3 2008/09/14 12:30:22 cfaerber Exp $
-#
 package Color::Calc::object;
 use Graphics::ColorObject;
 

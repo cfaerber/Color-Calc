@@ -1,5 +1,3 @@
-# $Id: pdf.pm,v 1.4 2008/09/14 12:30:22 cfaerber Exp $
-#
 package Color::Calc::pdf;
 
 use strict;
