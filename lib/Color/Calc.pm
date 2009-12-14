@@ -12,7 +12,7 @@ use POSIX;
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML;
 
-our $VERSION = '1.051';
+our $VERSION = '1.052';
 $VERSION = eval $VERSION;
 
 our $MODE = ();
