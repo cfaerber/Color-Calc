@@ -8,10 +8,13 @@ use Carp;
 use Exporter;
 use Color::Calc('OutputFormat' => 'html', 'ColorScheme' => 'WWW');
 
-our $VERSION = 1.05;
+our $VERSION = 1.052;
 
 our @ISA = qw(Exporter);
 our @EXPORT = ('color', map { 'color_'.$_ } @Color::Calc::__subs);
+
+1;
+__END__
 
 =encoding utf8
 
@@ -34,19 +37,33 @@ The C<Color::Calc::WWW> module implements simple calculations with RGB colors
 for the World Wide Web. This can be used to create a full color scheme from a
 few colors.
 
-=head1 FUNCTIONS
+This module is nearly identical to using the following:
+
+  use Color::Calc('ColorScheme' => 'WWW', 'OutputFormat' => 'html');
+
+However, this module also makes the functions available when not imported:
+
+  use Color::Calc::WWW();		# don't import
+  Color::Calc::WWW::color('F00');
+
+=head1 USAGE
+
+By default, all functions are imported.
+
+All functions recognize all HTML color keywords (through
+L<Graphics::ColorNames::WWW>) and output the results in WWW-compatible formats,
+i.e. as one of the 16 basic HTML keywords (see L<Graphics::ColorNames::WWW>) or
+as #RRGGBB.
 
 =over
 
-=item color_I<*>($input)
+=item color, color_mix, …
 
   See L<Color::Calc> for a list of available calculation functions.
 
-=item color($input)
-
-  Shorthand for C<color_get>.
-
 =back
+
+=head1 NOTE
 
 =head1 AUTHOR
 
@@ -54,12 +71,9 @@ Claus Färber <CFAERBER@cpan.org>
 
 =head1 LICENSE
 
-Copyright © 2004-2009 Claus Färber. All rights reserved.
+Copyright © 2004-2009 Claus Färber.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
 
 =cut
-
-1;
-

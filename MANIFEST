@@ -36,3 +36,4 @@ t/schemes_import_X.t
 t/schemes_oo.t
 TODO
 META.yml
+LICENSE

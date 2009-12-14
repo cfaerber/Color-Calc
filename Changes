@@ -1,5 +1,11 @@
 Revision history for Perl extension Color::Calc.
 
+1.052 Mon Dec 14 00:00:00 2009
+	- switch to Module::Build
+	- FIXES: #52744: Undeclared dependency on Test::NoWarnings (reported by
+	  ANDK)
+	- better documentation
+
 1.051 Fri Dec 11 00:00:00 2009
 	- documentation and meta information fixes, switch to Github
 	- no API/functionality changes
