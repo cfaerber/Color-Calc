@@ -26,8 +26,6 @@ foreach my $sub (@Color::Calc::__subs) {
 1;
 __END__
 
-=encoding utf8
-
 =head1 NAME
 
 Color::Calc::pdf - DEPRECATED: Simple calculations with colors (output for PDF::API2)
@@ -54,11 +52,11 @@ However, this module also makes the functions available when not imported:
 
 =head1 AUTHOR
 
-Claus Färber <CFAERBER@cpan.org>
+Claus FE<auml>rber <CFAERBER@cpan.org>
 
 =head1 LICENSE
 
-Copyright © 2004-2009 Claus Färber.
+Copyright 2004-2009 Claus FE<auml>rber.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

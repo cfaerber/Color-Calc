@@ -300,8 +300,6 @@ __import(__PACKAGE__, 'Prefix' => 'color', 'OutputFormat' => '__MODEvar');
 1;
 __END__
 
-=encoding utf8
-
 =head1 NAME
 
 Color::Calc - Simple calculations with RGB colors.
@@ -326,7 +324,7 @@ can be used to create a full color scheme from a few colors.
 
 =over
 
-=item Color::Calc->new( … )
+=item Color::Calc->new( ... )
 
 This class method creates a new C<Color::Calc> object.
 
@@ -397,7 +395,7 @@ Default: C<__MODEvar> (for compatibility)
 
 =back
 
-=item Color::Calc->import( … )
+=item Color::Calc->import( ... )
 
 This method creates a new, hidden object and binds its methods to the namespace
 of the calling module.
@@ -597,15 +595,15 @@ these functions are exported.
 
 =over
 
-=item color, color_mix, …
+=item color, color_mix, ...
 
 Use C<$Color::Calc::MODE> as the output format. This is the default.
 
-=item color_hex, color_mix_html, …
+=item color_hex, color_mix_html, ...
 
 Use C<hex> as the output format.
 
-=item color_html, color_mix_html, …
+=item color_html, color_mix_html, ...
 
 Use C<html> as the output format. Please note that the color names recognized
 are still based on X's color names, which are incompatible with HTML. You can't
@@ -614,11 +612,11 @@ use the output of these functions as input for other color_*_html functions.
 See L<Color::Calc::WWW> for an alternative that does not suffer from this
 problem.
 
-=item color_pdf, color_mix_pdf, …
+=item color_pdf, color_mix_pdf, ...
 
 Use C<pdf> as the output format.
 
-=item color_object, color_mix_object, …
+=item color_object, color_mix_object, ...
 
 Use C<object> as the output format.
 
@@ -630,11 +628,11 @@ L<Graphics::ColorNames> (required); L<Graphics::ColorObject> (optional)
 
 =head1 AUTHOR
 
-Claus Färber <CFAERBER@cpan.org>
+Claus FE<auml>rber <CFAERBER@cpan.org>
 
 =head1 LICENSE
 
-Copyright © 2004-2009 Claus Färber. All rights reserved.
+Copyright 2004-2009 Claus FE<auml>rber. All rights reserved.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

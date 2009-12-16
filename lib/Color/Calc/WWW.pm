@@ -16,8 +16,6 @@ our @EXPORT = ('color', map { 'color_'.$_ } @Color::Calc::__subs);
 1;
 __END__
 
-=encoding utf8
-
 =head1 NAME
 
 Color::Calc::WWW - Simple calculations with colors for the WWW.
@@ -67,11 +65,11 @@ as #RRGGBB.
 
 =head1 AUTHOR
 
-Claus Färber <CFAERBER@cpan.org>
+Claus FE<auml>rber <CFAERBER@cpan.org>
 
 =head1 LICENSE
 
-Copyright © 2004-2009 Claus Färber.
+Copyright 2004-2009 Claus FE<auml>rber.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
