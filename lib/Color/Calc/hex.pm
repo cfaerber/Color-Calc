@@ -7,7 +7,8 @@ use Carp;
 use Exporter;
 use Color::Calc();
 
-our $VERSION = 1.052;
+our $VERSION = "1.059_20091226";
+$VERSION = eval $VERSION;
 
 our @ISA = qw(Exporter);
 our @EXPORT = ('color', map { 'color_'.$_ } @Color::Calc::__subs);
