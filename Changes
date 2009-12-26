@@ -3,6 +3,7 @@ Revision history for Perl extension Color::Calc.
 1.059_20091226
 	- use Scalar::Util, List::Util
 	- some clean-ups and refactorisations
+	- remove obsolete modules
 
 1.052 Mon Dec 14 00:00:00 2009
 	- switch to Module::Build

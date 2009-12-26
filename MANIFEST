@@ -1,10 +1,5 @@
 Changes
 lib/Color/Calc.pm
-lib/Color/Calc/hex.pm
-lib/Color/Calc/html.pm
-lib/Color/Calc/object.pm
-lib/Color/Calc/pdf.pm
-lib/Color/Calc/tuple.pm
 lib/Color/Calc/WWW.pm
 Build.PL
 Makefile.PL
@@ -13,13 +8,8 @@ README
 t/00basic.t
 t/10pod.t
 t/11pod_cover.t
-t/DEPRECATED_import_hex.t
-t/DEPRECATED_import_html.t
 t/DEPRECATED_import_MODEval.t
-t/DEPRECATED_import_object.t
 t/DEPRECATED_import_suffix.t
-t/DEPRECATED_import_tuple.t
-t/DEPRECATED_non-import.t
 t/DEPRECATED_non-import_MODEval.t
 t/DEPRECATED_non-import_suffix.t
 t/import_hex.t
