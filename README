@@ -25,7 +25,6 @@ This module requires these other modules and libraries:
 
 The following modules are optional:
 
-  Color::Object
   Graphics::ColorObject
 
 COPYRIGHT AND LICENCE

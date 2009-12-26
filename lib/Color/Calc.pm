@@ -1,5 +1,6 @@
 package Color::Calc;
 
+use attributes;
 use strict;
 use utf8;
 use warnings;
@@ -10,7 +11,7 @@ use Params::Validate qw(:all);
 use POSIX;
 
 use Scalar::Util qw(dualvar);
-use List::Util qw(min max reduce);
+use List::Util qw(min max reduce sum);
 
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
@@ -21,7 +22,21 @@ $VERSION = eval $VERSION;
 our $MODE = ();
 
 my %__HTMLColors = ();
-our @__subs = qw( blend blend_bw bw contrast contrast_bw dark get grey gray invert light mix );
+our @__subs = qw(
+  blend blend_bw
+  bw
+  contrast contrast_bw
+  dark
+  get
+  gray
+  grey
+  invert
+  light
+  mix
+  opposite
+  round
+  safe
+);
 
 my %__formats = (
   'tuple'	=> sub { map { my $a = int($_); length($a) % 3 ? $a : dualvar($a, "0$a") } @_ },
@@ -138,14 +153,6 @@ sub __dualvar_tuple {
 
 sub __normtuple_in {
   return map { ($_ < 0) ? 0 : (($_ > 255) ? 255 : int($_+.5)) } @_;
-}
-
-sub __normtuple_out {
-  return map { (length $_) == 3 ? dualvar($_, "0$_") : $_ } __normtuple_in(@_)
-}
-
-sub __normtuple {
-  return __normtuple_out(__normtuple_in(@_));
 }
 
 sub __is_col_val {
@@ -450,6 +457,25 @@ sub invert {
   return $self->__put(map { 255 - $_ } $self->__get(\@_));
 }
 
+=item $cc->opposite($color) / color_opposite($color)
+
+Returns a color that is on the opposite side of the color wheel but roughly
+keeps the saturation and lightness.
+
+=cut 
+
+sub opposite {
+  my $self = __get_self(\@_);
+  my @rgb = $self->__get(\@_);
+
+  my $min = min @rgb;
+  my $max = max @rgb;
+
+  return $self->__put(
+    map { $max - $_ + $min } @rgb
+  );
+}
+
 =item $cc->bw($color) / color_bw($color)
 
 =item $cc->grey($color) / color_grey($color)
@@ -469,6 +495,62 @@ sub bw {
 
 *grey = \&bw;
 *gray = \&bw;
+
+=item $cc->round($color, $value_count) / color_round($color, $value_count)
+
+Rounds each component to to the nearest number determined by dividing the range
+0..255 into C<$value_count>+1 portions.
+
+The default for C<$value_count> is 6, yielding S<6^3 = 216> colors.  Values
+that are one higher than divisors of 255 yield the best results (e.g. 3+1, 5+1,
+7+1, 9+1, 15+1, 17+1, ...).
+
+=cut 
+
+sub round {
+  my $self = __get_self(\@_);
+  my @rgb = $self->__get(\@_);
+  my $steps = shift || 6;
+  $steps--;
+
+  return $self->__put(
+    map { int(int( $_ * $steps / 255 + 0.5) * 255 / $steps + 0.5) } @rgb
+  );
+}
+
+=item $cc->safe($color) / color_safe($color)
+
+Rounds each color component to a multiple of 0x33 (dec. 51) or to a named color
+defined in the HTML 4.01 specification.
+
+Historically, these colors have been known as web-safe colors. They still
+provide a convenient color palette.
+
+=cut
+
+sub __dist2 {
+  my @a = splice @_, 0, 3;
+  return sum map { POSIX::pow($_ - shift @a, 2) } @_;
+}
+
+sub safe {
+  my $self = __get_self(\@_);
+  my @rgb = $self->__get(\@_);
+
+  my @new_rgb = __get_raw->round(@rgb);
+  my $new_d2 = __dist2(@rgb, @new_rgb);
+
+  foreach my $h (keys %__HTMLColors) {
+    my @h_rgb = hex2tuple($h);
+    my $h_d2 = __dist2(@rgb, @h_rgb);
+
+    if($h_d2 <= $new_d2) {
+      @new_rgb = @h_rgb;
+      $new_d2 = $h_d2;
+    }
+  }
+  return $self->__put(@new_rgb);
+}
 
 =item $cc->mix($color1, $color2 [, $alpha]) / color_mix($color1, $color2 [, $alpha])
 
