@@ -21,7 +21,7 @@ my $b = Module::Build->new(
 
     	'requires'	=> {
 		'perl'		=> 5.006,
-		'Color::Calc'	=> 1.050,
+		'Color::Calc'	=> 1.060,
 	},
 	'resources' => {
 		'homepage' 	=> 'http://search.cpan.org/dist/Color-Calc',

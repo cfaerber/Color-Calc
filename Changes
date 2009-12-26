@@ -1,5 +1,8 @@
 Revision history for Perl extension Color::Calc::DEPRECATED.
 
+1.060 (2010-01-01)
+	- release, hopefully final version
+
 1.059_20091226
 	- test version	
 	- branch from Color::Calc main dist

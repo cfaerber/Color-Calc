@@ -8,7 +8,8 @@ use Carp;
 use Exporter;
 use Color::Calc();
 
-our $VERSION = 1.052;
+our $VERSION = "1.060";
+$VERSION = eval $VERSION;
 
 our @ISA = qw(Exporter);
 our @EXPORT = ('color', map { 'color_'.$_ } @Color::Calc::__subs);
@@ -57,7 +58,7 @@ Claus FE<auml>rber <CFAERBER@cpan.org>
 
 =head1 LICENSE
 
-Copyright 2004-2009 Claus FE<auml>rber.
+Copyright 2004-2010 Claus FE<auml>rber.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
