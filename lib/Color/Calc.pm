@@ -9,10 +9,13 @@ use Exporter;
 use Params::Validate qw(:all);
 use POSIX;
 
-use Graphics::ColorNames qw( hex2tuple tuple2hex );
-use Graphics::ColorNames::HTML;
+use Scalar::Util qw(dualvar);
+use List::Util qw(min max reduce);
 
-our $VERSION = '1.052';
+use Graphics::ColorNames qw( hex2tuple tuple2hex );
+use Graphics::ColorNames::HTML qw();
+
+our $VERSION = "1.059_20091226";
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -21,13 +24,14 @@ my %__HTMLColors = ();
 our @__subs = qw( blend blend_bw bw contrast contrast_bw dark get grey gray invert light mix );
 
 my %__formats = (
-  'tuple'	=> sub { return __normtuple_out(@_); },
-  'hex'		=> sub { return tuple2hex((@_)); },
-  'html'	=> sub { my $col = lc(tuple2hex((@_))); return $__HTMLColors{$col} || '#'.$col; },
-  'object'	=> sub { eval { require Graphics::ColorObject; }; return Graphics::ColorObject->new_RGB255( [(@_)] ); },
+  'tuple'	=> sub { map { my $a = int($_); length($a) % 3 ? $a : dualvar($a, "0$a") } @_ },
+  'hex'		=> sub { dualvar((reduce { ($a << 8) | ($b & 0xFF) } @_), tuple2hex(@_)) },
+  'html'	=> sub { my $col = lc(tuple2hex(@_)); $__HTMLColors{$col} || '#'.$col; },
+  'object'	=> sub { eval { require Graphics::ColorObject; }; return Graphics::ColorObject->new_RGB255( \@_ ); },
   'obj'		=> sub { eval { require Color::Object; }; return Color::Object->newRGB(map { 255*$_; } @_); },
-  'pdf'		=> sub { return '#'.(tuple2hex(@_)) },
 );
+
+$__formats{'pdf'} = $__formats{'html'};
 
 my @__formats = keys %__formats;
 my $__formats_re = join('|', @__formats,'__MODEvar');
@@ -69,10 +73,10 @@ sub __get_default {
   return $__default_object;
 }
 
-my $__tuple_object = undef;
-sub __get_tuple {
-  $__tuple_object = __PACKAGE__->new('OutputFormat' => 'tuple') unless $__tuple_object;
-  return $__tuple_object;
+my $__raw_object = undef;
+sub __get_raw {
+  $__raw_object = __PACKAGE__->new('OutputFormat' => 'tuple') unless $__raw_object;
+  return $__raw_object;
 }
 
 my %import_param = ( 
@@ -126,13 +130,18 @@ sub __import {
   return 1;
 }
 
+sub __dualvar_tuple {
+  my $str = shift;
+  my $num = reduce { ($a << 8) | ($b & 0xFF) } @_;
+  return dualvar $num, $str;
+}
 
 sub __normtuple_in {
   return map { ($_ < 0) ? 0 : (($_ > 255) ? 255 : int($_+.5)) } @_;
 }
 
 sub __normtuple_out {
-  return map { (length $_) == 3 ? '0'.$_ : $_ } __normtuple_in(@_)
+  return map { (length $_) == 3 ? dualvar($_, "0$_") : $_ } __normtuple_in(@_)
 }
 
 sub __normtuple {
@@ -223,83 +232,6 @@ sub __get_self {
   }
 }
 
-sub get { 
-  my $self = __get_self(\@_); 
-  return $self->__put($self->__get(\@_)); 
-}
-
-sub invert {
-  my $self = __get_self(\@_);
-  return $self->__put(map { 255 - $_ } $self->__get(\@_));
-}
-
-sub bw {
-  my $self = __get_self(\@_);
-  my @c = $self->__get(\@_);
-  my $g = $c[0]*.3 + $c[1]*.59 + $c[2]*.11;
-  return $self->__put(__normtuple($g,$g,$g));
-}
-
-*grey = \&bw;
-*gray = \&bw;
-
-sub mix {
-  my $self = __get_self(\@_);
-  my @c1 = ($self->__get(\@_,1));
-  my @c2 = ($self->__get(\@_));
-  my $alpha = shift(@_); $alpha = 0.5 unless defined $alpha;
-
-  return $self->__put(__normtuple(
-    ($c1[0] + ($c2[0]-$c1[0])*$alpha),
-    ($c1[1] + ($c2[1]-$c1[1])*$alpha),
-    ($c1[2] + ($c2[2]-$c1[2])*$alpha) ));
-}
-
-sub light {
-  my $self = __get_self(\@_);
-  return $self->__put(__get_tuple->mix([$self->__get(\@_)],[255,255,255],shift));
-}
-
-sub dark {
-  my $self = __get_self(\@_);
-  return $self->__put(__get_tuple->mix([$self->__get(\@_)],[0,0,0],shift));
-}
-
-sub contrast {
-  my $self = __get_self(\@_);
-  my @rgb = $self->__get(\@_);
-  my $cut = (shift || .5) * 255;
-  return $self->__put(map { $_ >= $cut ? 0 : '0255' } @rgb);
-}
-
-sub contrast_bw {
-  my $self = __get_self(\@_);
-  my @rgb = $self->__get(\@_);
-  return $self->__put(__get_tuple->contrast([__get_tuple->bw(@rgb)], shift));
-}
-
-sub blend {
-  my $self = __get_self(\@_);
-  my @c1 = $self->__get(\@_);
-  return $self->mix(\@c1,[__get_tuple->contrast(\@c1)],shift);
-}
-
-sub blend_bw {
-  my $self = __get_self(\@_);
-  my @c = $self->__get(\@_);
-  return $self->mix(\@c,[__get_tuple->contrast_bw(\@c)],shift);
-}
-
-foreach my $format (@__formats) {
-  __import(__PACKAGE__, 'Prefix' => 'color', '__Suffix' => "_$format", 'OutputFormat' => $format);
-  __import(__PACKAGE__, 'Prefix' => '',      '__Suffix' => "_$format", 'OutputFormat' => $format);
-}
-
-__import(__PACKAGE__, 'Prefix' => 'color', 'OutputFormat' => '__MODEvar');
-
-1;
-__END__
-
 =head1 NAME
 
 Color::Calc - Simple calculations with RGB colors.
@@ -360,7 +292,8 @@ guaranteed to have a C<length> that is not a multiple of three.
 
 =item hex
 
-Returns a hexadecimal RGB value as a string in the format RRGGBB.
+Returns a hexadecimal RGB value as a scalar that contains a string in the
+format RRGGBB and a number representing the hexadecimal number 0xRRGGBB.
 
 =item html
 
@@ -369,8 +302,8 @@ i.e. I<#RRGGBB> or one of the sixteen HTML color names.
 
 =item obj
 	
-Returns a C<Color::Object> reference. The module
-C<Color::Object> must be installed, of course.
+(DEPRECATED) Returns a C<Color::Object> reference. The module C<Color::Object>
+must be installed, of course.
 
 =item object
 
@@ -499,9 +432,23 @@ reference (here: C<$cc>) or through the method names imported by C<import>
 Returns C<$color> as-is (but in the selected output format). This
 function can be used for color format conversion/normalisation.
 
+=cut
+
+sub get { 
+  my $self = __get_self(\@_); 
+  return $self->__put($self->__get(\@_)); 
+}
+
 =item $cc->invert($color) / color_invert($color)
 
 Returns the inverse of C<$color>.
+
+=cut
+
+sub invert {
+  my $self = __get_self(\@_);
+  return $self->__put(map { 255 - $_ } $self->__get(\@_));
+}
 
 =item $cc->bw($color) / color_bw($color)
 
@@ -511,12 +458,38 @@ Returns the inverse of C<$color>.
 
 Converts C<$color> to greyscale.
 
+=cut
+
+sub bw {
+  my $self = __get_self(\@_);
+  my @c = $self->__get(\@_);
+  my $g = $c[0]*.3 + $c[1]*.59 + $c[2]*.11;
+  return $self->__put($g, $g, $g);
+}
+
+*grey = \&bw;
+*gray = \&bw;
+
 =item $cc->mix($color1, $color2 [, $alpha]) / color_mix($color1, $color2 [, $alpha])
 
 Returns a color that is the mixture of C<$color1> and C<$color2>.
 
 The optional C<$alpha> parameter can be a value between 0.0 (use
 C<$color1> only) and 1.0 (use C<$color2> only), the default is 0.5.
+
+=cut
+
+sub mix {
+  my $self = __get_self(\@_);
+  my @c1 = ($self->__get(\@_,1));
+  my @c2 = ($self->__get(\@_));
+  my $alpha = shift(@_); $alpha = 0.5 unless defined $alpha;
+
+  return $self->__put(
+    ($c1[0] + ($c2[0]-$c1[0])*$alpha),
+    ($c1[1] + ($c2[1]-$c1[1])*$alpha),
+    ($c1[2] + ($c2[2]-$c1[2])*$alpha) );
+}
 
 =item $cc->light($color [, $alpha]) / color_light($color [, $alpha])
 
@@ -526,6 +499,13 @@ C<mix($color,[255,255,255],$alpha)>.
 The optional C<$alpha> parameter can be a value between 0.0 (use C<$color>
 only) and 1.0 (use [255,255,255] only), the default is 0.5.
 
+=cut
+
+sub light {
+  my $self = __get_self(\@_);
+  return $self->__put(__get_raw->mix([$self->__get(\@_)],[255,255,255],shift));
+}
+
 =item $cc->dark($color [, $alpha]) / color_dark($color [, $alpha])
 
 Returns a darker version of C<$color>, i.e. returns
@@ -533,6 +513,14 @@ C<mix($color,[0,0,0],$alpha)>.
 
 The optional C<$alpha> parameter can be a value between 0.0 (use
 C<$color> only) and 1.0 (use [0,0,0] only), the default is 0.5.
+
+=cut
+
+sub dark {
+  my $self = __get_self(\@_);
+  return $self->__put(__get_raw->mix([$self->__get(\@_)],[0,0,0],shift));
+}
+
 
 =item $cc->contrast($color [, $cut]) / color_contrast($color [, $cut])
 
@@ -545,6 +533,15 @@ to 255 otherwise.
 
 The default for C<$cut> is .5, representing a cutoff between 127 and 128.
 
+=cut
+
+sub contrast {
+  my $self = __get_self(\@_);
+  my @rgb = $self->__get(\@_);
+  my $cut = (shift || .5) * 255;
+  return $self->__put(map { $_ >= $cut ? 0 : 255 } @rgb);
+}
+
 =item $cc->contrast_bw($color [, $cut]) / color_contrast_bw($color [, $cut])
 
 Returns black or white, whichever has the higher contrast to C<$color>.
@@ -554,8 +551,15 @@ above C<($cut * 255)> and white otherwise.
 
 The default for C<$cut> is .5, representing a cutoff between 127 and 128.
 
-=item $cc->blend($color [, $alpha])
-color_blend($color [, $alpha])
+=cut
+
+sub contrast_bw {
+  my $self = __get_self(\@_);
+  my @rgb = $self->__get(\@_);
+  return $self->__put(__get_raw->contrast([__get_raw->bw(@rgb)], shift));
+}
+
+=item $cc->blend($color [, $alpha]) / color_blend($color [, $alpha])
 
 Returns a color that blends into the background, i.e. it returns
 C<mix($color,contrast($color),$alpha)>.
@@ -571,6 +575,14 @@ them returns a color somewhere between them.
 You might want to use C<mix($color, $background, $alpha)> instead
 if you know the real background color.
 
+=cut
+
+sub blend {
+  my $self = __get_self(\@_);
+  my @c1 = $self->__get(\@_);
+  return $self->mix(\@c1,[__get_raw->contrast(\@c1)],shift);
+}
+
 =item $cc->blend_bw($color [, $alpha]) / color_blend_bw($color [, $alpha])
 
 Returns a mix of C<$color> and black or white, whichever has the
@@ -578,6 +590,14 @@ higher contrast to C<$color>.
 
 The optional C<$alpha> parameter can be a value between 0.0 (use
 C<$color> only) and 1.0 (use black/white only), the default is 0.5.
+
+=cut
+
+sub blend_bw {
+  my $self = __get_self(\@_);
+  my @c = $self->__get(\@_);
+  return $self->mix(\@c,[__get_raw->contrast_bw(\@c)],shift);
+}
 
 =back
 
@@ -622,6 +642,15 @@ Use C<object> as the output format.
 
 =back
 
+=cut
+
+foreach my $format (@__formats) {
+  __import(__PACKAGE__, 'Prefix' => 'color', '__Suffix' => "_$format", 'OutputFormat' => $format);
+  __import(__PACKAGE__, 'Prefix' => '',      '__Suffix' => "_$format", 'OutputFormat' => $format);
+}
+
+__import(__PACKAGE__, 'Prefix' => 'color', 'OutputFormat' => '__MODEvar');
+
 =head1 SEE ALSO
 
 L<Graphics::ColorNames> (required); L<Graphics::ColorObject> (optional)
@@ -638,3 +667,6 @@ This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
 
 =cut
+
+1;
+__END__

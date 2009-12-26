@@ -14,7 +14,7 @@ my $b = Module::Build->new(
 	'create_makefile_pl' => 'traditional',
 
     	'requires'	=> {
-		'Graphics::ColorNames'=> 0.32,
+		'Graphics::ColorNames'	=> 2.10,
 		'Graphics::ColorNames::WWW' => 0.01,
 		'Graphics::ColorNames::HTML'=> 0,
 		'Params::Validate'	=> 0.75,
