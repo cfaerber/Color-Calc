@@ -2,12 +2,14 @@
 
 use 5.006;
 use strict;
+use utf8;
 
 use Module::Build;
 
 my $b = Module::Build->new(
 	'module_name'	=> 'Color::Calc',
 	'license'	=> 'perl',
+	'dist_author'	=> 'Claus Färber <CFAERBER@cpan.org>',
 
 	'sign'		=> 1,
 	'create_license' => 1,
