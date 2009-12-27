@@ -16,7 +16,7 @@ use List::Util qw(min max reduce sum);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
 
-our $VERSION = "1.059_20091227";
+our $VERSION = "1.060";
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -743,7 +743,7 @@ Claus FE<auml>rber <CFAERBER@cpan.org>
 
 =head1 LICENSE
 
-Copyright 2004-2009 Claus FE<auml>rber. All rights reserved.
+Copyright 2004-2010 Claus FE<auml>rber. All rights reserved.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

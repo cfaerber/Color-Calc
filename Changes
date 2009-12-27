@@ -1,5 +1,8 @@
 Revision history for Perl extension Color::Calc.
 
+1.060 (2010-01-01)
+	- release 1.059_20091227
+
 1.059_20091227
 	- new calc functions: opposite, round, safe
 

@@ -25,6 +25,22 @@ my $b = Module::Build->new(
 		'Test::More' => 0, 
 		'Test::NoWarnings' => 0,
 	},
+
+	auto_features => {
+		'color_object_support' => {
+			'description'	=> 'support for Color::Object (obsolete)',
+			'requires'	=> {
+				'Color::Object'	=> 1,
+			}
+		},
+		'graphics_colorobject_support' => {
+			'description'	=> 'support for Graphics::ColorObject',
+			'requires'	=> {
+				'Graphics::ColorObject'	=> 0.005,
+			}
+		},
+	},
+
 	'no_index' => {
 		'directory' => 'eg'
 	},
@@ -32,6 +48,7 @@ my $b = Module::Build->new(
 		'homepage' => 'http://search.cpan.org/dist/Color-Calc',
 		'repository' => 'http://github.com/cfaerber/Color-Calc',
 	},
+
 );
 
 $b->create_build_script;
