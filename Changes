@@ -1,5 +1,9 @@
 Revision history for Perl extension Color::Calc.
 
+1.061 (2010-02-11)
+	- workaround for #54500: ambiguity between module and file names in
+	  TIEHASH in Color::GraphicsName  (reported here by sunnavy)
+
 1.060 (2010-01-01)
 	- release 1.059_20091227
 

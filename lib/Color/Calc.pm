@@ -16,7 +16,7 @@ use List::Util qw(min max reduce sum);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
 
-our $VERSION = "1.060";
+our $VERSION = "1.061";
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -73,7 +73,11 @@ sub new {
 
   if(!ref($self->{'ColorScheme'})) {
     my %ColorNames;
-    tie %ColorNames, 'Graphics::ColorNames', ($self->{'ColorScheme'} || 'X');
+    if(defined $self->{'ColorScheme'}) {
+      tie %ColorNames, 'Graphics::ColorNames', $self->{'ColorScheme'};
+    } else {
+      tie %ColorNames, 'Graphics::ColorNames';
+    }
     $self->{'ColorScheme'} = \%ColorNames;
   }
 
