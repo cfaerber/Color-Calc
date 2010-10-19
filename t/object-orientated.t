@@ -32,10 +32,11 @@ is($cc->grey		('red'),		'#4d4d4d');
 is($cc->invert		('red'),		'aqua');
 is($cc->light		('red'),		'#ff8080');
 
-$cc = Color::Calc->new( 'OutputFormat' => 'object' );
 SKIP: {
 eval { require Graphics::ColorObject; };
 skip "Graphics::ColorObject not installed", 12 if $@;
+
+$cc = Color::Calc->new( 'OutputFormat' => 'object' );
 
 is(lc $cc->get		('red')->as_RGBhex,		'ff0000');
 is(lc $cc->mix		('red','blue')->as_RGBhex,	'800080');

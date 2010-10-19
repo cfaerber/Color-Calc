@@ -16,7 +16,7 @@ use List::Util qw(min max reduce sum);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
 
-our $VERSION = "1.061";
+our $VERSION = "1.070";
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -42,8 +42,13 @@ my %__formats = (
   'tuple'	=> sub { map { my $a = int($_); length($a) % 3 ? $a : dualvar($a, "0$a") } @_ },
   'hex'		=> sub { dualvar((reduce { ($a << 8) | ($b & 0xFF) } @_), tuple2hex(@_)) },
   'html'	=> sub { my $col = lc(tuple2hex(@_)); $__HTMLColors{$col} || '#'.$col; },
-  'object'	=> sub { eval { require Graphics::ColorObject; }; return Graphics::ColorObject->new_RGB255( \@_ ); },
-  'obj'		=> sub { eval { require Color::Object; }; return Color::Object->newRGB(map { 255*$_; } @_); },
+  'object'	=> sub { return Graphics::ColorObject->new_RGB255( \@_ ); },
+  'obj'		=> sub { return Color::Object->newRGB(map { 255*$_; } @_); },
+);
+
+my %__formats_require = (
+  'obj'		=> 'Color::Object',
+  'object'	=> 'Graphics::ColorObject',
 );
 
 $__formats{'pdf'} = $__formats{'html'};
@@ -63,7 +68,7 @@ our @EXPORT = ('color', map({"color_$_"} @__formats, map({my $s=$_; (map{$s.'_'.
 our @ISA = ('Exporter');
 
 my %new_param = (
-  'ColorScheme' => { type => SCALAR, optional => 1 },
+  'ColorScheme' => { type => SCALAR | HANDLE | HASHREF | ARRAYREF | CODEREF, optional => 1 },
   'OutputFormat' => { type => SCALAR, untaint => 1, regexp => qr($__formats_re), optional => 1 },
 );
 
@@ -71,7 +76,7 @@ sub new {
   my $pkg = shift; validate(@_, \%new_param);
   my $self = {@_}; bless($self, $pkg);
 
-  if(!ref($self->{'ColorScheme'})) {
+  unless(UNIVERSAL::isa($self->{'ColorScheme'}, 'Graphics::ColorNames')) {
     my %ColorNames;
     if(defined $self->{'ColorScheme'}) {
       tie %ColorNames, 'Graphics::ColorNames', $self->{'ColorScheme'};
@@ -216,12 +221,25 @@ sub __get {
   }
 }
 
+sub __require_format {
+  my $new_fmt = shift;
+
+  if(exists $__formats_require{$new_fmt}) {
+    eval 'require $__formats_require{$new_fmt}';
+    croak "cannot load module '$__formats_require{$new_fmt}', which is needed for OutputFormat '$new_fmt': $!" if $!
+  }
+  return 1;
+}
+
 sub set_output_format {
   validate_pos(@_, { isa => __PACKAGE__ }, { type => SCALAR, regexp => qr($__formats_re) });
   my $self = shift;
+  my $new_fmt = shift;
+
+  __require_format($new_fmt);
 
   my $old = $self->{'OutputFormat'};
-  $self->{'OutputFormat'} = shift;
+  $self->{'OutputFormat'} = $new_fmt;
 
   $self->{'__put'} = $self->{'OutputFormat'} eq '__MODEvar' 
     ? sub{ return $__formats{$MODE || 'tuple'}->(@_); }
@@ -731,6 +749,7 @@ Use C<object> as the output format.
 =cut
 
 foreach my $format (@__formats) {
+  next if !eval{__require_format($format)};
   __import(__PACKAGE__, 'Prefix' => 'color', '__Suffix' => "_$format", 'OutputFormat' => $format);
   __import(__PACKAGE__, 'Prefix' => '',      '__Suffix' => "_$format", 'OutputFormat' => $format);
 }
