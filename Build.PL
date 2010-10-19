@@ -9,8 +9,8 @@ use Module::Build;
 
 my $b = Module::Build->new(
 	'dist_name'	=> 'Color-Calc-DEPRECATED',
-	'dist_author'	=> 'Claus Färber <CFAERBER@cpan.org>',
-	'dist_abstract'	=> 'deprecated and obsolete modules from Color::Calc',
+	'dist_author'	=> 'Claus Faerber <CFAERBER@cpan.org>',
+	'dist_abstract'	=> 'DEPRECATED modules from Color::Calc',
 	'dist_version_from' => 'lib/Color/Calc/hex.pm',
 
 	'license'	=> 'perl',
