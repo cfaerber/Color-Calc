@@ -6,9 +6,13 @@ use warnings;
 use Carp;
 
 use Exporter;
-use Color::Calc('OutputFormat' => 'html', 'ColorScheme' => 'WWW');
 
-our $VERSION = "1.060";
+use Color::Calc(
+  'OutputFormat' => 'html',
+  'ColorScheme' => 'WWW'
+);
+
+our $VERSION = "1.070";
 $VERSION = eval $VERSION;
 
 our @ISA = qw(Exporter);

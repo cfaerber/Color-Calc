@@ -1,10 +1,12 @@
 use Test::More tests => 14;
 use Test::NoWarnings;
-use Color::Calc( 'OutputFormat' => 'object' );
+require Color::Calc;
 
 SKIP: {
 eval { require Graphics::ColorObject; };
 skip "Graphics::ColorObject not installed", 13 if $@;
+
+Color::Calc->import( 'OutputFormat' => 'object' );
 
 is(lc color_get		('red')->as_RGBhex,		'ff0000');
 is(lc color    		('red')->as_RGBhex,		'ff0000');

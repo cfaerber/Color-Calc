@@ -16,7 +16,7 @@ use List::Util qw(min max reduce sum);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
 
-our $VERSION = "1.061";
+our $VERSION = "1.070";
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -38,12 +38,23 @@ our @__subs = qw(
   safe
 );
 
+sub __put_tuple { map { my $a = int($_); length($a) % 3 ? $a : dualvar($a, "0$a") } @_ };
+sub __put_hex 	{ dualvar((reduce { ($a << 8) | ($b & 0xFF) } @_), tuple2hex(@_)) };
+sub __put_html	{ my $col = lc(tuple2hex(@_)); $__HTMLColors{$col} || '#'.$col; };
+sub __put_object{ return Graphics::ColorObject->new_RGB255( \@_, '', '' ); };
+sub __put_obj	{ return Color::Object->newRGB(map { 255*$_; } @_); };
+
 my %__formats = (
-  'tuple'	=> sub { map { my $a = int($_); length($a) % 3 ? $a : dualvar($a, "0$a") } @_ },
-  'hex'		=> sub { dualvar((reduce { ($a << 8) | ($b & 0xFF) } @_), tuple2hex(@_)) },
-  'html'	=> sub { my $col = lc(tuple2hex(@_)); $__HTMLColors{$col} || '#'.$col; },
-  'object'	=> sub { eval { require Graphics::ColorObject; }; return Graphics::ColorObject->new_RGB255( \@_ ); },
-  'obj'		=> sub { eval { require Color::Object; }; return Color::Object->newRGB(map { 255*$_; } @_); },
+  map { m/^__put_(.*)/ ? ( $1 => $Color::Calc::{$_} ) : () }
+    keys %Color::Calc::
+);
+
+# use Data::Dumper;
+# print STDERR Dumper(\%__formats);
+
+my %__formats_require = (
+  'obj'		=> 'Color::Object',
+  'object'	=> 'Graphics::ColorObject',
 );
 
 $__formats{'pdf'} = $__formats{'html'};
@@ -63,7 +74,7 @@ our @EXPORT = ('color', map({"color_$_"} @__formats, map({my $s=$_; (map{$s.'_'.
 our @ISA = ('Exporter');
 
 my %new_param = (
-  'ColorScheme' => { type => SCALAR, optional => 1 },
+  'ColorScheme' => { type => SCALAR | HANDLE | HASHREF | ARRAYREF | CODEREF, optional => 1 },
   'OutputFormat' => { type => SCALAR, untaint => 1, regexp => qr($__formats_re), optional => 1 },
 );
 
@@ -71,9 +82,17 @@ sub new {
   my $pkg = shift; validate(@_, \%new_param);
   my $self = {@_}; bless($self, $pkg);
 
-  if(!ref($self->{'ColorScheme'})) {
+  unless(UNIVERSAL::isa($self->{'ColorScheme'}, 'Graphics::ColorNames')) {
     my %ColorNames;
     if(defined $self->{'ColorScheme'}) {
+      if(!ref $self->{'ColorScheme'} && $self->{'ColorScheme'} =~ m/^([[:alnum:]_]+)$/) {
+        my $module = 'Graphics::ColorNames::'.$1;
+        eval "use $module;"; croak $! if $!;
+        my $names = UNIVERSAL::can($module, 'NamesRgbTable');
+        croak "$module is not compatible with Graphics::ColorNames" if !$names;
+        $self->{'ColorScheme'} = &$names();
+      }
+
       tie %ColorNames, 'Graphics::ColorNames', $self->{'ColorScheme'};
     } else {
       tie %ColorNames, 'Graphics::ColorNames';
@@ -82,7 +101,6 @@ sub new {
   }
 
   $self->set_output_format($self->{'OutputFormat'} || 'tuple');
-
   return $self;
 }
 
@@ -156,7 +174,7 @@ sub __dualvar_tuple {
 }
 
 sub __normtuple_in {
-  return map { ($_ < 0) ? 0 : (($_ > 255) ? 255 : int($_+.5)) } @_;
+  return map { (!defined($_) || $_ < 0) ? 0 : (($_ > 255) ? 255 : int($_+.5)) } @_;
 }
 
 sub __is_col_val {
@@ -206,7 +224,7 @@ sub __get {
   }
   else {
     my $col = $self->{'ColorScheme'}->{$$p[0]};
-    if($col) {
+    if(defined $col) {
       shift @$p; 
       return hex2tuple($col);
     } else {
@@ -216,12 +234,23 @@ sub __get {
   }
 }
 
+sub __require_format {
+  my $new_fmt = shift;
+
+  if(exists $__formats_require{$new_fmt}) {
+    eval "use $__formats_require{$new_fmt}()"; 
+    croak $@ if $@;
+  }
+  return 1;
+}
+
 sub set_output_format {
   validate_pos(@_, { isa => __PACKAGE__ }, { type => SCALAR, regexp => qr($__formats_re) });
   my $self = shift;
+  my $new_fmt = shift;
 
   my $old = $self->{'OutputFormat'};
-  $self->{'OutputFormat'} = shift;
+  $self->{'OutputFormat'} = $new_fmt;
 
   $self->{'__put'} = $self->{'OutputFormat'} eq '__MODEvar' 
     ? sub{ return $__formats{$MODE || 'tuple'}->(@_); }
@@ -287,6 +316,10 @@ include C<X> (color names used in X-Windows) and C<HTML> (color
 names defined in the HTML 4.0 specification). For a full list of
 possible values, please refer to the documentation of of
 C<Graphics::ColorNames>.
+
+Unlike C<Graphics::ColorNames>, barewords are I<always> interpreted as a module
+name under C<Graphics::ColorNames>. If you really want to use a filename like
+"foo", you have to write it as "./foo".
 
 Default: C<X> (Note: This is incompatible with HTML color names).
 
@@ -731,6 +764,7 @@ Use C<object> as the output format.
 =cut
 
 foreach my $format (@__formats) {
+  next if !eval{__require_format($format)};
   __import(__PACKAGE__, 'Prefix' => 'color', '__Suffix' => "_$format", 'OutputFormat' => $format);
   __import(__PACKAGE__, 'Prefix' => '',      '__Suffix' => "_$format", 'OutputFormat' => $format);
 }
