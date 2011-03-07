@@ -16,7 +16,7 @@ use List::Util qw(min max reduce sum);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
 
-our $VERSION = "1.070";
+our $VERSION = "1.071";
 $VERSION = eval $VERSION;
 
 our $MODE = ();
@@ -87,7 +87,7 @@ sub new {
     if(defined $self->{'ColorScheme'}) {
       if(!ref $self->{'ColorScheme'} && $self->{'ColorScheme'} =~ m/^([[:alnum:]_]+)$/) {
         my $module = 'Graphics::ColorNames::'.$1;
-        eval "use $module;"; croak $! if $!;
+        eval "use $module;"; croak $! if $@;
         my $names = UNIVERSAL::can($module, 'NamesRgbTable');
         croak "$module is not compatible with Graphics::ColorNames" if !$names;
         $self->{'ColorScheme'} = &$names();

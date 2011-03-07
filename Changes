@@ -1,5 +1,9 @@
 Revision history for Perl extension Color::Calc.
 
+1.071 (2011-03-07)
+	- FIXES: #66357: Cannot Build the library on Debian
+	  (reported by SILASMONK)
+
 1.070 (2010-10-20)
 	- better workaround for #54500, now also works with explicit scheme
 	  specifications (e.g. 'HTML'), not just the default value
