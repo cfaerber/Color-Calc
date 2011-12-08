@@ -16,7 +16,7 @@ use List::Util qw(min max reduce sum);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
 
-our $VERSION = "1.071";
+our $VERSION = "1.072";
 $VERSION = eval $VERSION;
 
 our $MODE = ();

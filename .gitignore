@@ -7,6 +7,9 @@ blib
 pm_to_blib
 Color-Calc-*
 META.yml
+META.json
+MYMETA.yml
+MYMETA.json
 SIGNATURE
 LICENSE
 _build

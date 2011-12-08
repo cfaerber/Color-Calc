@@ -1,5 +1,9 @@
 Revision history for Perl extension Color::Calc.
 
+1.072 (2011-12-08)
+	- FIXES: #72615 faulty data in Build.PL causes a lack of
+	  meta files, which breaks carton.
+
 1.071 (2011-03-07)
 	- FIXES: #66357: Cannot Build the library on Debian
 	  (reported by SILASMONK)

@@ -42,7 +42,7 @@ my $b = Module::Build->new(
 	},
 
 	'no_index' => {
-		'directory' => 'eg'
+		'directory' => ['eg']
 	},
 	'resources' => {
 		'homepage' => 'http://search.cpan.org/dist/Color-Calc',
