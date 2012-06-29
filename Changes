@@ -1,5 +1,9 @@
 Revision history for Perl extension Color::Calc.
 
+1.073 (2012-06-29)
+	- FIXES: compile error due to warning "Non-ASCII character seen before
+	  =encoding in '...'. Assuming UTF-8"
+
 1.072 (2011-12-08)
 	- FIXES: #72615 faulty data in Build.PL causes a lack of
 	  meta files, which breaks carton.

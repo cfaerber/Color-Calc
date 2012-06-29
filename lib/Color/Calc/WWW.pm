@@ -12,7 +12,7 @@ use Color::Calc(
   'ColorScheme' => 'WWW'
 );
 
-our $VERSION = "1.070";
+our $VERSION = "1.073";
 $VERSION = eval $VERSION;
 
 our @ISA = qw(Exporter);
@@ -60,7 +60,7 @@ as #RRGGBB.
 
 =over
 
-=item color, color_mix, …
+=item color, color_mix, ...
 
   See L<Color::Calc> for a list of available calculation functions.
 
