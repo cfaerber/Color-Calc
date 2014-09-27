@@ -8,7 +8,7 @@ use warnings;
 use Carp;
 use Exporter;
 use Params::Validate qw(:all);
-use POSIX;
+use POSIX ();
 
 use Scalar::Util qw(dualvar);
 use List::Util qw(min max reduce sum);
@@ -16,7 +16,7 @@ use List::Util qw(min max reduce sum);
 use Graphics::ColorNames qw( hex2tuple tuple2hex );
 use Graphics::ColorNames::HTML qw();
 
-our $VERSION = "1.073";
+our $VERSION = "1.074";
 $VERSION = eval $VERSION;
 
 our $MODE = ();
